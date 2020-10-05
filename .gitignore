@@ -131,3 +131,7 @@ dmypy.json
 # VScode
 .vs/*
 .vscode/*
+
+# ignore the huge data file
+
+x_train_gr_smpl.csv
