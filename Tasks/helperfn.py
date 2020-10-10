@@ -29,9 +29,22 @@ def _get_file_path(filename):
 def get_random_data(result_id=-1):
     """Get Dataframe with randomized instance order, takes filename as arg
 
-    :param filename: The name of the file to be imported
-    :type filename: string
     :return: A tuple of entire data collection with randomized order of instances
+    :rtype: (pandas.df, pandas.df)
+    """
+    x, y = get_data(result_id)
+    full_data = randomize_data(append_result_col(x, y))
+    y = full_data[['y']]
+    x = full_data.drop('y', 1)
+    return x, y
+
+
+def get_data(result_id=-1):
+    """Get a tuple of the result and data csv
+
+    :param result_id: The index of the result datafile, defaults to -1
+    :type result_id: int, optional
+    :return: A tuple of the data collection
     :rtype: (pandas.df, pandas.df)
     """
     result_files = {
@@ -47,13 +60,12 @@ def get_random_data(result_id=-1):
         8: 'y_train_smpl_8.csv',
         9: 'y_train_smpl_9.csv'
     }
-    data = _get_dataset(_get_file_path('x_train_gr_smpl.csv'))
+    x = _get_dataset(_get_file_path('x_train_gr_smpl.csv'))
     filePicker = result_files.get(result_id, 'y_train_smpl.csv')
-    result = _get_dataset(_get_file_path(filePicker))
-    full_data = randomize_data(append_result_col(data, result))
-    y = full_data[['y']]
-    x = full_data.drop('y', 1)
-    return (x, y)
+    y = _get_dataset(_get_file_path(filePicker))
+    y.columns = ['y']
+    return x, y
+
 
 def append_result_col(data, result):
     """Return a new dataframe with result column in data
