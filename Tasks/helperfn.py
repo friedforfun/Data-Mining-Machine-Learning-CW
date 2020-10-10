@@ -35,20 +35,20 @@ def get_random_data(result_id=-1):
     :rtype: (pandas.df, pandas.df)
     """
     result_files = {
-        -1: 'y_train_smple.csv',
-        0: 'y_train_smple_0.csv',
-        1: 'y_train_smple_1.csv',
-        2: 'y_train_smple_2.csv',
-        3: 'y_train_smple_3.csv',
-        4: 'y_train_smple_4.csv',
-        5: 'y_train_smple_5.csv',
-        6: 'y_train_smple_6.csv',
-        7: 'y_train_smple_7.csv',
-        8: 'y_train_smple_8.csv',
-        9: 'y_train_smple_9.csv'
+        -1: 'y_train_smpl.csv',
+        0: 'y_train_smpl_0.csv',
+        1: 'y_train_smpl_1.csv',
+        2: 'y_train_smpl_2.csv',
+        3: 'y_train_smpl_3.csv',
+        4: 'y_train_smpl_4.csv',
+        5: 'y_train_smpl_5.csv',
+        6: 'y_train_smpl_6.csv',
+        7: 'y_train_smpl_7.csv',
+        8: 'y_train_smpl_8.csv',
+        9: 'y_train_smpl_9.csv'
     }
     data = _get_dataset(_get_file_path('x_train_gr_smpl.csv'))
-    filePicker = result_files.get(result_id, 'y_train_smple.csv')
+    filePicker = result_files.get(result_id, 'y_train_smpl.csv')
     result = _get_dataset(_get_file_path(filePicker))
     full_data = randomize_data(append_result_col(data, result))
     y = full_data[['y']]
@@ -64,7 +64,7 @@ def append_result_col(data, result):
     :type result: [type]
     """
     result.columns = ['y']
-    return data.assign(result)
+    return data.join(result)
 
 def randomize_data(dataframe):
     """[summary]
