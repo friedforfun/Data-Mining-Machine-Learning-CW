@@ -75,10 +75,18 @@ def get_results(result_id=-1):
 
     :param result_id: The id of the result file, -1 indicates the full classifier, defaults to -1
     :type result_id: int, optional
-    :return: classifications
+    :return: classification results in order
     :rtype: pandas.df
     """
     return _get_dataset(_get_file_path(_file_selector(result_id)))
+
+def get_data_noresults():
+    """Get the dataset without results
+
+    :return: The raw dataset, in order, without result column
+    :rtype: pandas.df
+    """
+    return _get_dataset(_get_file_path('x_train_gr_smpl.csv'))
 
 
 def append_result_col(data, result):
