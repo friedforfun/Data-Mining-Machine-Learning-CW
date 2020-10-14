@@ -1,6 +1,23 @@
 import pandas
 import os.path
 
+result_files = {
+    -1: 'y_train_smpl.csv',
+    0: 'y_train_smpl_0.csv',
+    1: 'y_train_smpl_1.csv',
+    2: 'y_train_smpl_2.csv',
+    3: 'y_train_smpl_3.csv',
+    4: 'y_train_smpl_4.csv',
+    5: 'y_train_smpl_5.csv',
+    6: 'y_train_smpl_6.csv',
+    7: 'y_train_smpl_7.csv',
+    8: 'y_train_smpl_8.csv',
+    9: 'y_train_smpl_9.csv'
+}
+
+def _file_selector(id):
+    return result_files.get(id, 'y_train_smpl.csv')
+
 def _get_dataset(filepath):
     """Use get_random_data() instead. 
     Get Dataframe with randomized instance order, takes filepath as arg
@@ -47,24 +64,21 @@ def get_data(result_id=-1):
     :return: A tuple of the data collection
     :rtype: (pandas.df, pandas.df)
     """
-    result_files = {
-        -1: 'y_train_smpl.csv',
-        0: 'y_train_smpl_0.csv',
-        1: 'y_train_smpl_1.csv',
-        2: 'y_train_smpl_2.csv',
-        3: 'y_train_smpl_3.csv',
-        4: 'y_train_smpl_4.csv',
-        5: 'y_train_smpl_5.csv',
-        6: 'y_train_smpl_6.csv',
-        7: 'y_train_smpl_7.csv',
-        8: 'y_train_smpl_8.csv',
-        9: 'y_train_smpl_9.csv'
-    }
     x = _get_dataset(_get_file_path('x_train_gr_smpl.csv'))
     filePicker = result_files.get(result_id, 'y_train_smpl.csv')
     y = _get_dataset(_get_file_path(filePicker))
     y.columns = ['y']
     return x, y
+
+def get_results(result_id=-1):
+    """Get the result dataset on its own
+
+    :param result_id: The id of the result file, -1 indicates the full classifier, defaults to -1
+    :type result_id: int, optional
+    :return: classifications
+    :rtype: pandas.df
+    """
+    return _get_dataset(_get_file_path(_file_selector(result_id)))
 
 
 def append_result_col(data, result):
