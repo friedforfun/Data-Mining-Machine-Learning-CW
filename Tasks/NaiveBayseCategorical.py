@@ -4,8 +4,8 @@ from sklearn.model_selection import train_test_split
 import helperfn
 
 
-
-raw_data_sets = []
+training_smpl = helperfn.get_data_noresults()
+raw_data_results = []
 
 train_test_results = []
 classifiers = []
