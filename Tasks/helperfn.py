@@ -93,10 +93,10 @@ def get_data_noresults():
 def append_result_col(data, result):
     """Return a new dataframe with result column in data
 
-    :param data: [description]
-    :type data: [type]
-    :param result: [description]
-    :type result: [type]
+    :param data: The dataset without the result column
+    :type data: pandas.df
+    :param result: The result vector to append to data
+    :type result: pandas.df
     """
     result.columns = ['y']
     return data.join(result)
@@ -118,6 +118,8 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
     :type y: pandas.df
     :param samples: size of sample. Defaults to None -> in this case the sample returned will be the size of the smallest class
     :type samples: int, Optional
+    :param allow_imbalance: If size param > number of rows in smallest class indicate if allowing an imbalanced class distribution is ok
+    :type allow_imbalance: Bool, Optional
     :return: the sample and labels
     :rtype: tuple(pandas.df, pandas.df)
     """
