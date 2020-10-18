@@ -8,7 +8,7 @@ from itertools import product
 
 import numpy as np
 
-def build_nbg_models(test_size=0.2, random_state=0):
+def build_nbg_models(test_size=0.2, random_state=0, balance_classes=False):
     """Build and score naive bayse gaussian model
 
     :param test_size: the percentage of the sample size to test with, defaults to 0.2
@@ -32,10 +32,24 @@ def build_nbg_models(test_size=0.2, random_state=0):
     #raw_data_results = raw_data_results + [anomoulous_data]
 
     for i in range(0, 11):
-        raw_data_results = raw_data_results + [helperfn.get_results(result_id=i-1)]
-        print('Dataset: ', i-1, ' Has results:', np.unique(raw_data_results[i].to_numpy()))
-        train_test_data = train_test_data + [train_test_split(training_smpl, raw_data_results[i], test_size=test_size, random_state=random_state)]
-        classifiers = classifiers + [GaussianNB().fit(train_test_data[i][0], train_test_data[i][2])]
+        if balance_classes:
+            raw_y = helperfn.get_results(result_id=i-1)
+            raw_data_results += [helperfn.balance_by_class(training_smpl, raw_y)]
+            print('Dataset: ', i-1, ' Has results:',
+                  np.unique(raw_data_results[i][1].to_numpy()))
+            #print(raw_data_results[i][1])
+            train_test_data = train_test_data + [train_test_split(raw_data_results[i][0], raw_data_results[i][1], test_size=test_size, random_state=random_state)]
+
+        else:
+            raw_data_results = raw_data_results + [helperfn.get_results(result_id=i-1)]
+            print('Dataset: ', i-1, ' Has results:', np.unique(raw_data_results[i].to_numpy()))
+            train_test_data = train_test_data + [train_test_split(training_smpl, raw_data_results[i], test_size=test_size, random_state=random_state)]
+        
+        print(train_test_data[i][0].shape, train_test_data[i][1].shape, train_test_data[i][2].shape, train_test_data[i][3].shape)
+        print(train_test_data[i][1].values.dtype)
+        classifiers = classifiers + \
+            [GaussianNB().fit(train_test_data[i][0].values,
+                              train_test_data[i][2].values)]
         scores = scores + [(classifiers[i].score(train_test_data[i][0], train_test_data[i][2]),
                             classifiers[i].score(train_test_data[i][1], train_test_data[i][3]))]
 
