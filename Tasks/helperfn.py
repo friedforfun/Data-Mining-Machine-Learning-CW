@@ -142,4 +142,4 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
             frame = frame.append(df.head(size))
     y_res = frame[['y']]
     X_res = frame.drop('y', 1)
-    return X_res, y_res
+    return X_res.astype(int), y_res.astype(int)
