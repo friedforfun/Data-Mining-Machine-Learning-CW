@@ -3,7 +3,7 @@ from sklearn.naive_bayes import CategoricalNB, MultinomialNB
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
 import matplotlib.pyplot as plt
-import helperfn
+from .. import helperfn
 
 import numpy as np
 

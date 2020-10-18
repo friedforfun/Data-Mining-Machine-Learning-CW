@@ -6,10 +6,13 @@
 Welcome to Data Mining & Machine Learning Coursework's documentation!
 =====================================================================
 
-.. automodule:: Tasks.SamNaiveBayseGaussian
+.. automodule:: Scripts.NaiveBayse.NaiveBayseCategorical
     :members:
 
-.. automodule:: Tasks.helperfn
+.. automodule:: Scripts.NaiveBayse.SamNaiveBayseGaussian
+    :members:
+
+.. automodule:: Scripts.helperfn
     :members:
 
 .. toctree::
