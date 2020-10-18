@@ -6,6 +6,9 @@
 Welcome to Data Mining & Machine Learning Coursework's documentation!
 =====================================================================
 
+.. automodule:: Tasks.SamNaiveBayseGaussian
+    :members:
+
 .. automodule:: Tasks.helperfn
     :members:
 

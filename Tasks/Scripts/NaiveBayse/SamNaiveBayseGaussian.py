@@ -3,7 +3,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
 import matplotlib.pyplot as plt
-import helperfn
+from .. import helperfn
 from itertools import product
 
 import numpy as np
