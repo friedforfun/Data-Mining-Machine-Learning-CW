@@ -3,8 +3,10 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
 import matplotlib.pyplot as plt
+from sklearn.utils import indices_to_mask
 from .. import helperfn
 from itertools import product
+from sklearn.model_selection import RepeatedStratifiedKFold
 
 import numpy as np
 
@@ -24,6 +26,8 @@ def build_nbg_models(test_size=0.2, random_state=0, balance_classes=False):
     train_test_data = []
     classifiers = []
     scores = []
+    
+    rskf = RepeatedStratifiedKFold(n_splits=2, n_repeats=2,random_state=36851234)
 
     #return helperfn.get_results(result_id=0)
     #anomoulous_data = helperfn.get_results(result_id=-1)
@@ -34,24 +38,29 @@ def build_nbg_models(test_size=0.2, random_state=0, balance_classes=False):
     for i in range(0, 11):
         if balance_classes:
             raw_y = helperfn.get_results(result_id=i-1)
-            raw_data_results += [helperfn.balance_by_class(training_smpl, raw_y)]
+            #raw_data_results += [helperfn.balance_by_class(training_smpl, raw_y)]
             print('Dataset: ', i-1, ' Has results:',
                   np.unique(raw_data_results[i][1].to_numpy()))
-            #print(raw_data_results[i][1])
             train_test_data = train_test_data + [train_test_split(raw_data_results[i][0], raw_data_results[i][1], test_size=test_size, random_state=random_state)]
 
         else:
             raw_data_results = raw_data_results + [helperfn.get_results(result_id=i-1)]
             print('Dataset: ', i-1, ' Has results:', np.unique(raw_data_results[i].to_numpy()))
             train_test_data = train_test_data + [train_test_split(training_smpl, raw_data_results[i], test_size=test_size, random_state=random_state)]
+            
         
-        print(train_test_data[i][0].shape, train_test_data[i][1].shape, train_test_data[i][2].shape, train_test_data[i][3].shape)
-        print(train_test_data[i][1].values.dtype)
-        classifiers = classifiers + \
-            [GaussianNB().fit(train_test_data[i][0].values,
-                              train_test_data[i][2].values)]
-        scores = scores + [(classifiers[i].score(train_test_data[i][0], train_test_data[i][2]),
-                            classifiers[i].score(train_test_data[i][1], train_test_data[i][3]))]
+        
+        for train_index, test_index in rskf.split(train_test_data[i][0], train_test_data[i][1]):
+            X_train, X_test = train_test_data[train_index][0], train_test_data[test_index][0]
+            y_train, y_test = train_test_data[train_index][1], train_test_data[test_index][1]
+        
+            print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+            print(X_test.values.dtype)
+            classifiers = classifiers + \
+                [GaussianNB().fit(X_train.values,
+                                  y_train.values)]
+            scores = scores + [(classifiers[i].score( X_train, y_train),
+                                classifiers[i].score(X_test, y_test))]
 
     for i in range(len(scores)):
         print("Scores for dataset: ", label_def.get(i-1, i-1))
@@ -60,6 +69,41 @@ def build_nbg_models(test_size=0.2, random_state=0, balance_classes=False):
         print("--------------------------------------")
 
     return classifiers, scores, train_test_data
+
+
+def rskSplit():
+    
+    from sklearn.model_selection import RepeatedStratifiedKFold
+    
+    classifiers = []
+    scores = []
+    X , y = helperfn.get_data(2)
+
+    
+    rskf = RepeatedStratifiedKFold(n_splits=2, n_repeats=2,random_state=36851234)
+        
+    for train_index, test_index in rskf.split(X, y):
+        print("TRAIN:", train_index, "TEST:", test_index)
+        print(train_index.shape , test_index.shape)
+        X_train, X_test = np.take(X,train_index, axis=0), np.take(X,test_index, axis=0)
+        y_train, y_test = np.take(y,train_index, axis=0), np.take(y,test_index, axis=0)
+        
+        
+    for i in range(0, 11):
+    
+        classifiers = classifiers + \
+                    [GaussianNB().fit(X_train.values,
+                                    y_train.values)]
+        scores = scores + [(classifiers[i].score( X_train, y_train),
+                                    classifiers[i].score(X_test, y_test))]
+
+        for i in range(len(scores)):
+            print("Scores for dataset: ", label_def.get(i-1, i-1))
+            print("Training data score: ", scores[i][0])
+            print("Testing data score: ", scores[i][1])
+            print("--------------------------------------")
+        
+
 
 def build_confusion_matrix(classifiers, data):
     """Build the confusion matrices
