@@ -2,6 +2,8 @@ from sklearn.metrics import confusion_matrix, accuracy_score, ConfusionMatrixDis
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.model_selection import train_test_split
 import helperfn
+import pandas
+
 
 
 def build_nbc_models(test_size=0.2, random_state=0):
@@ -34,4 +36,43 @@ def build_nbc_models(test_size=0.2, random_state=0):
         print("Testing data score: ", scores[i][1])
         print("--------------------------------------")
 
-    return classifiers, scores
+    return classifiers, scores, train_test_data
+
+def build_confusion_matrix(classifiers, data):
+    
+    confusionMatrixArr = []
+    
+    for i in range(len(classifiers)):
+        cm = confusion_matrix(data[i][3], classifiers[i].predict(data[i][1]))
+        confusionMatrixArr = confusionMatrixArr + [cm]
+        
+    return confusionMatrixArr
+
+def show_confusion_matrix(confusionMatrixArr, index_range=(0,11)):
+    """
+    docstring
+    """
+    for i in range(index_range[0],index_range[1]):
+        if i == 0:
+            cmd = ConfusionMatrixDisplay(
+                confusionMatrixArr[i], display_labels=['20','30','50','60','70','left','right','ped Xing', 'beware childer', 'cycle route'])
+        else:
+            cmd = ConfusionMatrixDisplay(confusionMatrixArr[i], display_labels=['yes', 'no'])
+        cmd.plot()
+        
+        
+def countRates(number):
+    values = helperfn.get_results(number).to_numpy()
+    countTrue = 0
+    countFalse = 0
+    
+    for i in values:
+        if i == 0:
+            countTrue += 1
+        else:
+            countFalse += 1
+            
+    return countTrue, countFalse
+    
+    
+    
