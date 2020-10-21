@@ -11,12 +11,10 @@ def bestPixels(X, y, n):
     :rtype: array
     """
     result = []
-
     for i in range(X.shape[1]):
         result.append(X[str(i)].corr(y['y']))
 
     result = np.array(result)
-
 
     res_arr = []
 
@@ -24,10 +22,6 @@ def bestPixels(X, y, n):
 
         index = np.argmax(result)
         res_arr.append(index)
-
-        result = np.delete(result, index)
-
+        result[index] = -111
 
     return res_arr
-
-
