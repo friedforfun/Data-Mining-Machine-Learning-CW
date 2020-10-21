@@ -16,14 +16,24 @@ def downscale(X_data, downscale_shape=(2,2)):
     return np.apply_along_axis(downscale_image, 1, X_data)
 
 def downscale_image(image, downscale_shape=(2, 2)):
-    d = math.sqrt(image.shape[0])
+    """Downscale an image vector using local mean downscaling
+
+    :param image: The image vector to downscale
+    :type image: numpy.array
+    :param downscale_shape: The degree of downscaling to perform on each asix, defaults to (2, 2)
+    :type downscale_shape: tuple, optional
+    :return: The image vector but downscaled
+    :rtype: numpy.array
+    """
+    d = int(round(math.sqrt(image.shape[0]), 0))
     image = image.reshape(d,d)
-    downscaled = downscale_local_mean(image, (2,2))
-    downscaled.flatten()
+    downscaled = downscale_local_mean(image, downscale_shape)
+    downscaled = downscaled.flatten()
     return downscaled
 
 def visualise_downsample(img):
     """Display the image & its downsampled versions
+    From: https://scikit-learn.org/stable/auto_examples/miscellaneous/plot_display_object_visualization.html#sphx-glr-auto-examples-miscellaneous-plot-display-object-visualization-py
 
     :param img: A single image vector with 2304 pixels
     :type img: numpy.array
