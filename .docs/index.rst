@@ -6,7 +6,7 @@
 Welcome to Data Mining & Machine Learning Coursework's documentation!
 =====================================================================
 
-..automodule:: Scripts.downsample
+.. automodule:: Scripts.downsample
     :members:
 
 .. automodule:: Scripts.NaiveBayse.NaiveBayseCategorical
