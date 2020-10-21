@@ -8,7 +8,27 @@ from itertools import product
 
 import numpy as np
 
-def build_nbg_models(test_size=0.2, random_state=0, balance_classes=False):
+
+def nbg_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True):
+
+    if balance_classes:
+        X, y = helperfn.balance_by_class(X, y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+    classifier = GaussianNB().fit(X_train, y_train)
+    score_train = classifier.score(X_train, y_train)
+    score_test = classifier.score(X_test, y_test)
+
+    if print_scores:
+        if data_label is not None:
+            print("Scores for dataset: ", label_def.get(data_label, data_label))
+        print("Training data score: ", score_train)
+        print("Testing data score: ", score_test)
+        print("--------------------------------------")
+
+    return classifier, (score_train, score_test), (X_train, X_test, y_train, y_test)
+
+
+def build_nbg_models(**kwargs):
     """Build and score naive bayse gaussian model
 
     :param test_size: the percentage of the sample size to test with, defaults to 0.2
@@ -19,45 +39,19 @@ def build_nbg_models(test_size=0.2, random_state=0, balance_classes=False):
     :rtype: Tuple(List, List, List)
     """
     training_smpl = helperfn.get_data_noresults()
-    raw_data_results = []
 
     train_test_data = []
     classifiers = []
     scores = []
 
-    #return helperfn.get_results(result_id=0)
-    #anomoulous_data = helperfn.get_results(result_id=-1)
-    #print('Dataset: ', -1, ' Has results:', np.unique(anomoulous_data.to_numpy()))
-
-    #raw_data_results = raw_data_results + [anomoulous_data]
-
     for i in range(0, 11):
-        if balance_classes:
-            raw_y = helperfn.get_results(result_id=i-1)
-            raw_data_results += [helperfn.balance_by_class(training_smpl, raw_y)]
-            print('Dataset: ', i-1, ' Has results:',
-                  np.unique(raw_data_results[i][1].to_numpy()))
-            #print(raw_data_results[i][1])
-            train_test_data = train_test_data + [train_test_split(raw_data_results[i][0], raw_data_results[i][1], test_size=test_size, random_state=random_state)]
-
-        else:
-            raw_data_results = raw_data_results + [helperfn.get_results(result_id=i-1)]
-            print('Dataset: ', i-1, ' Has results:', np.unique(raw_data_results[i].to_numpy()))
-            train_test_data = train_test_data + [train_test_split(training_smpl, raw_data_results[i], test_size=test_size, random_state=random_state)]
-        
-        print(train_test_data[i][0].shape, train_test_data[i][1].shape, train_test_data[i][2].shape, train_test_data[i][3].shape)
-        print(train_test_data[i][1].values.dtype)
-        classifiers = classifiers + \
-            [GaussianNB().fit(train_test_data[i][0].values,
-                              train_test_data[i][2].values)]
-        scores = scores + [(classifiers[i].score(train_test_data[i][0], train_test_data[i][2]),
-                            classifiers[i].score(train_test_data[i][1], train_test_data[i][3]))]
-
-    for i in range(len(scores)):
-        print("Scores for dataset: ", label_def.get(i-1, i-1))
-        print("Training data score: ", scores[i][0])
-        print("Testing data score: ", scores[i][1])
-        print("--------------------------------------")
+        results = helperfn.get_results(result_id=i-1)
+        print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
+        classifer, score, data = nbg_model_custom_data(
+            training_smpl, results, **kwargs, data_label=i)
+        classifiers += [classifer]
+        scores += [score]
+        train_test_data += [data]
 
     return classifiers, scores, train_test_data
 
