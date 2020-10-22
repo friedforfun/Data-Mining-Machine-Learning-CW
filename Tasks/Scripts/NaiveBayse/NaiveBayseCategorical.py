@@ -48,12 +48,15 @@ def build_confusion_matrix(classifiers, data):
     :param data: List of the Train and testing data
     :return: List: sklearn.metrics.confusion_matrix
     """
-    confusion = []
+    test_confusion = []
+    train_confusion = []
     # build confusion matrices for all classifiers
     for i in range(len(classifiers)):
+        cmt = confusion_matrix(data[i][2], classifiers[i].predict(data[i][0]))
+        train_confusion += [cmt]
         cm = confusion_matrix(data[i][3], classifiers[i].predict(data[i][1]))
-        confusion = confusion + [cm]
-    return confusion
+        test_confusion = test_confusion + [cm]
+    return train_confusion, test_confusion
 
 def show_confusion_matrix(confusion, index_range=(0, 11)):
     for i in range(index_range[0],index_range[1]):
