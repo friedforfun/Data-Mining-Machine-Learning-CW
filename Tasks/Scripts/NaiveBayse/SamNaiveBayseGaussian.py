@@ -7,6 +7,7 @@ import pandas as pd
 from .. import helperfn
 from .. import downsample as ds
 from itertools import product
+from  .. import LewisWIP as rsk
 
 import numpy as np
 
@@ -52,7 +53,7 @@ def nbg_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, 
     return classifier, (score_train, score_test), (X_train, X_test, y_train, y_test)
 
 
-def build_nbg_models(downscale=False, downscale_shape=(2,2), **kwargs):
+def build_nbg_models(downscale=False, downscale_shape=(2,2), repeated_stratified_Kfold=False, **kwargs):
     """Build and score naive bayse gaussian model
 
     :param downscale: Downscale the images by a factor defined in downscale_shape param
@@ -65,18 +66,40 @@ def build_nbg_models(downscale=False, downscale_shape=(2,2), **kwargs):
     training_smpl = helperfn.get_data_noresults()
     if downscale:
         training_smpl = ds.downscale(training_smpl, downscale_shape=downscale_shape)
+        
+ 
+
+        
     train_test_data = []
     classifiers = []
     scores = []
-
+    
+    rsk_data = []
+    #nbg_models = []
+    
     for i in range(0, 11):
         results = helperfn.get_results(result_id=i-1)
         print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
-        classifer, score, data = nbg_model_custom_data(
-            training_smpl, results, **kwargs, data_label=i-1)
-        classifiers += [classifer]
-        scores += [score]
-        train_test_data += [data]
+        
+        if repeated_stratified_Kfold:
+            
+            rsk_data += [rsk.singleRSK(training_smpl, results)]
+            
+            for j in range(len(rsk_data)):
+                classifer, score, data = nbg_model_custom_data(
+                    rsk_data[j][0], rsk_data[j][2], **kwargs, data_label=i-1)
+                
+                classifiers += [classifer]
+                scores += [score]
+                train_test_data += [data]
+                
+        else:
+            classifer, score, data = nbg_model_custom_data(
+                training_smpl, results, **kwargs, data_label=i-1)
+            
+            classifiers += [classifer]
+            scores += [score]
+            train_test_data += [data]
 
     return classifiers, scores, train_test_data
 
