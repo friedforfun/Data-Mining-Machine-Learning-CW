@@ -1,108 +1,84 @@
-from sklearn.metrics import confusion_matrix, accuracy_score, ConfusionMatrixDisplay, cohen_kappa_score
+from sklearn.metrics import confusion_matrix, accuracy_score, ConfusionMatrixDisplay, cohen_kappa_score, plot_confusion_matrix
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
 import matplotlib.pyplot as plt
-from sklearn.utils import indices_to_mask
+import pandas as pd
 from .. import helperfn
+from .. import downsample as ds
 from itertools import product
-from sklearn.model_selection import RepeatedStratifiedKFold
 
 import numpy as np
 
-def build_nbg_models(test_size=0.2, random_state=0, balance_classes=False):
-    """Build and score naive bayse gaussian model
 
+def nbg_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True):
+    """Build classifiers, scores, and data from supplied dataset
+
+    :param X: The data
+    :type X: np.array
+    :param y: The data labels
+    :type y: np.array
+    :param data_label: An integer identifier for the labels, defaults to None
+    :type data_label: int, optional
     :param test_size: the percentage of the sample size to test with, defaults to 0.2
     :type test_size: float, optional
     :param random_state: the random seed, defaults to 0
     :type random_state: int, optional
+    :param balance_classes: Set to true to create a balanced class distribution, defaults to False
+    :type balance_classes: bool, optional
+    :param print_scores: display the scores, defaults to True
+    :type print_scores: bool, optional
+    :return: The classifier, scores, and data
+    :rtype: (GaussianNB, (training_scores, testing_scores), (sklearn.train_test_split))
+    """
+    
+    if balance_classes:
+        X = pd.DataFrame(data=X)
+        y = pd.DataFrame(data=y)
+        X, y = helperfn.balance_by_class(X, y)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+    classifier = GaussianNB().fit(X_train, y_train)
+    score_train = classifier.score(X_train, y_train)
+    score_test = classifier.score(X_test, y_test)
+
+    if print_scores:
+        if data_label is not None:
+            print("Scores for dataset: ", label_def.get(data_label, data_label))
+        print("Training data score: ", score_train)
+        print("Testing data score: ", score_test)
+        print("--------------------------------------")
+
+    return classifier, (score_train, score_test), (X_train, X_test, y_train, y_test)
+
+
+def build_nbg_models(downscale=False, downscale_shape=(2,2), **kwargs):
+    """Build and score naive bayse gaussian model
+
+    :param downscale: Downscale the images by a factor defined in downscale_shape param
+    :type downscale: bool, optional
+    :param downscale_shape: The degree of downscaling on each axis, defaults to (2,2)
+    :type downscale_shape: tuple, optional
     :return: Tuple of List: classifers, List: scores, List: traing & testing data
     :rtype: Tuple(List, List, List)
     """
     training_smpl = helperfn.get_data_noresults()
-    raw_data_results = []
-
+    if downscale:
+        training_smpl = ds.downscale(training_smpl, downscale_shape=downscale_shape)
     train_test_data = []
     classifiers = []
     scores = []
-    
-    rskf = RepeatedStratifiedKFold(n_splits=2, n_repeats=2,random_state=36851234)
-
-    #return helperfn.get_results(result_id=0)
-    #anomoulous_data = helperfn.get_results(result_id=-1)
-    #print('Dataset: ', -1, ' Has results:', np.unique(anomoulous_data.to_numpy()))
-
-    #raw_data_results = raw_data_results + [anomoulous_data]
 
     for i in range(0, 11):
-        if balance_classes:
-            raw_y = helperfn.get_results(result_id=i-1)
-            #raw_data_results += [helperfn.balance_by_class(training_smpl, raw_y)]
-            print('Dataset: ', i-1, ' Has results:',
-                  np.unique(raw_data_results[i][1].to_numpy()))
-            train_test_data = train_test_data + [train_test_split(raw_data_results[i][0], raw_data_results[i][1], test_size=test_size, random_state=random_state)]
-
-        else:
-            raw_data_results = raw_data_results + [helperfn.get_results(result_id=i-1)]
-            print('Dataset: ', i-1, ' Has results:', np.unique(raw_data_results[i].to_numpy()))
-            train_test_data = train_test_data + [train_test_split(training_smpl, raw_data_results[i], test_size=test_size, random_state=random_state)]
-            
-        
-        
-        for train_index, test_index in rskf.split(train_test_data[i][0], train_test_data[i][1]):
-            X_train, X_test = train_test_data[train_index][0], train_test_data[test_index][0]
-            y_train, y_test = train_test_data[train_index][1], train_test_data[test_index][1]
-        
-            print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
-            print(X_test.values.dtype)
-            classifiers = classifiers + \
-                [GaussianNB().fit(X_train.values,
-                                  y_train.values)]
-            scores = scores + [(classifiers[i].score( X_train, y_train),
-                                classifiers[i].score(X_test, y_test))]
-
-    for i in range(len(scores)):
-        print("Scores for dataset: ", label_def.get(i-1, i-1))
-        print("Training data score: ", scores[i][0])
-        print("Testing data score: ", scores[i][1])
-        print("--------------------------------------")
+        results = helperfn.get_results(result_id=i-1)
+        print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
+        classifer, score, data = nbg_model_custom_data(
+            training_smpl, results, **kwargs, data_label=i-1)
+        classifiers += [classifer]
+        scores += [score]
+        train_test_data += [data]
 
     return classifiers, scores, train_test_data
-
-
-def rskSplit():
-    
-    #from sklearn.model_selection import RepeatedStratifiedKFold
-    
-    classifiers = []
-    scores = []
-    
-    for i in range(0,11):
-    
-        X , y = helperfn.get_data(i)
-
-        
-        rskf = RepeatedStratifiedKFold(n_splits=2, n_repeats=2,random_state=36851234)
-            
-        for train_index, test_index in rskf.split(X, y):
-            X_train, X_test = np.take(X,train_index, axis=0), np.take(X,test_index, axis=0)
-            y_train, y_test = np.take(y,train_index, axis=0), np.take(y,test_index, axis=0)
-            
-            
-            classifiers = classifiers + \
-                        [GaussianNB().fit(X_train.values,
-                                        y_train.values)]
-            scores = scores + [(classifiers[i].score( X_train, y_train),
-                                        classifiers[i].score(X_test, y_test))]
-
-       
-            print("Scores for dataset: ", label_def.get(i-1, i-1))
-            print("Training data score: ", scores[i][0])
-            print("Testing data score: ", scores[i][1])
-            print("--------------------------------------")
-            
-
 
 def build_confusion_matrix(classifiers, data):
     """Build the confusion matrices
@@ -112,12 +88,15 @@ def build_confusion_matrix(classifiers, data):
     :param data: List of the Train and testing data
     :return: List: sklearn.metrics.confusion_matrix
     """
+    train_confusion = []
     confusion = []
     # build confusion matrices for all classifiers
     for i in range(len(classifiers)):
+        cmt = confusion_matrix(data[i][2], classifiers[i].predict(data[i][0]))
         cm = confusion_matrix(data[i][3], classifiers[i].predict(data[i][1]))
         confusion = confusion + [cm]
-    return confusion
+        train_confusion += [cmt]
+    return train_confusion, confusion
 
 def show_confusion_matrix(confusion, index_range=(0, 10), kappas=None):
     """Diplay all confusion matrix within range
@@ -127,23 +106,77 @@ def show_confusion_matrix(confusion, index_range=(0, 10), kappas=None):
     :param index_range: the range of indices within the confusion param to display, defaults to (0, 10)
     :type index_range: tuple(int), optional
     """
+    fig, axes = plt.subplots(nrows=len(confusion), figsize=(7, len(confusion)*10))
+    ax = axes.ravel()
     for i in range(index_range[0], index_range[1]):
         if kappas is not None:
-            print('Kappa: ', kappas[i])
-        fig, ax = plt.subplots()
-        cax = ax.matshow(confusion[i])
+            #print('Kappa: ', kappas[i])
+            kappa = round(kappas[i], 2)
         if i == 0:
             # special case labels
             cmd = ConfusionMatrixDisplay(confusion[i], display_labels=[i for i in range(0,10)])
-            plt.title("All classes")
+            cmd.plot(ax=ax[i])
+            if kappas is not None:
+                cmd.ax_.set_title(f'All classes\nKappa: {kappa}', fontsize=20)
+            else:
+                cmd.ax_.set_title('All classes', fontsize=20)
         else:
             cmd = ConfusionMatrixDisplay(
                 confusion[i], display_labels=['True', 'False'])
-            plt.title(label_def.get(i, i))
+            cmd.plot(ax=ax[i])
+            label = label_def.get(i, i)
+            if kappas is not None:
+                cmd.ax_.set_title(f'{label}\n Kappa: {kappa}', fontsize=20)
+            else:
+                cmd.ax_.set_title(f'{label}', fontsize=20)
+            
+    plt.subplots_adjust(wspace=0.40, hspace=0.1)
+    axes.flat[-1].set_visible(False)
+    plt.show()
 
-        cmd.plot(ax=ax)
-        plt.show()
-        
+def multi_show_confusion_matrix(conf_arr, index_range=(0,10), kappas=None, col_labels=None):
+    """Display all confusion matrices together
+
+    :param conf_arr: List containing arrays of confusion matrices
+    :type conf_arr: List[List[numpy.array]]
+    :param index_range: the range of indices within the confusion param to display, defaults to (0, 10), defaults to (0,10)
+    :type index_range: tuple(int), optional
+    :param kappas: List of Kappa values matching the shape of conf_arr, defaults to None
+    :type kappas: List[List[numpy.array]], optional
+    :param col_labels: Description of each dataset
+    :type col_labels: List[string]
+    """
+    if kappas is not None:
+        if len(conf_arr) != len(kappas):
+            raise ValueError('mismatched conf_arr and kappas params')
+
+    # all i in conf_arr[i] must have equal length
+    fig, axes = plt.subplots(nrows=len(conf_arr[0]), ncols=len(conf_arr), figsize=(len(conf_arr)*10, len(conf_arr[0])*10))
+    ax_arr = axes.ravel()
+
+    for i in range(len(conf_arr)):
+        for j in range(len(conf_arr[i])):
+            if j == 0:
+                disp_labels = [i for i in range(0, 10)]
+                title = f'{col_labels[i]}\nAll classes'
+                if kappas is not None:
+                    kappa = round(kappas[i][j], 2)
+                    title = f'{col_labels[i]}\nAll classes\nKappa: {kappa}'
+            else:
+                disp_labels = ['True', 'False']
+                label = label_def.get(j-1, j-1)
+                title = label
+                if kappas is not None:
+                    kappa = round(kappas[i][j], 2)
+                    title = f'{label}\nKappa: {kappa}'
+            cmd = ConfusionMatrixDisplay(conf_arr[i][j], display_labels=disp_labels)
+            cmd.plot(ax=ax_arr[j*len(conf_arr)+i])
+            cmd.ax_.set_title(title, fontsize=20)
+
+
+    plt.tight_layout(h_pad=5, w_pad=2)
+    
+    plt.show()
 
 def kappa(confusion):
     """Generate kappa values for the confusion matrix against randomised ndarrays

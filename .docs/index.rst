@@ -6,6 +6,12 @@
 Welcome to Data Mining & Machine Learning Coursework's documentation!
 =====================================================================
 
+.. automodule:: Scripts.pixelFinder
+    :members:
+
+.. automodule:: Scripts.downsample
+    :members:
+
 .. automodule:: Scripts.NaiveBayse.NaiveBayseCategorical
     :members:
 
