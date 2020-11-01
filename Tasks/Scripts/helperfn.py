@@ -2,6 +2,10 @@ import pandas
 import numpy as np
 import os.path
 
+from Scripts import pixelFinder
+
+
+
 result_files = {
     -1: 'y_train_smpl.csv',
     0: 'y_train_smpl_0.csv',
@@ -15,6 +19,37 @@ result_files = {
     8: 'y_train_smpl_8.csv',
     9: 'y_train_smpl_9.csv'
 }
+
+label_def = {
+    -1: 'All Classes',
+    0: 'speed limit 20',
+    1: 'speed limit 30',
+    2: 'speed limit 50',
+    3: 'speed limit 60',
+    4: 'speed limit 70',
+    5: 'left turn',
+    6: 'right turn',
+    7: 'beware pedestrian crossing',
+    8: 'beware children',
+    9: 'beware cycle route ahead'
+}
+
+
+
+def get_pixel_class_tuple(pixels, label):
+    """[summary]
+
+    Args:
+        pixels ([type]): [description]
+        label ([type]): [description]
+
+    Returns:
+        [type]: A list of n pixel tuples with the best
+    """
+    pixelsResult = pixelFinder.bestPixels(label, pixels)    
+    convertedLabel = label_def[1]
+    
+    return [(str(pixel), convertedLabel) for pixel in pixelsResult]
 
 def _file_selector(id):
     return result_files.get(id, 'y_train_smpl.csv')
@@ -145,3 +180,6 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
     y_res = frame[['y']]
     X_res = frame.drop('y', 1)
     return X_res.astype(int), y_res.astype(int)
+
+
+    

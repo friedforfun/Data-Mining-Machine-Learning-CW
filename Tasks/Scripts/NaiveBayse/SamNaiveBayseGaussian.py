@@ -7,7 +7,7 @@ import pandas as pd
 from .. import helperfn
 from .. import downsample as ds
 from itertools import product
-from  .. import LewisWIP as rsk
+#from  .. import LewisWIP as rsk
 
 import numpy as np
 

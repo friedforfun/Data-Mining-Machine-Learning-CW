@@ -66,3 +66,4 @@ def showHeatmap(index_range=(0, 10)):
         fig.colorbar(cax)
 
         plt.show()
+
