@@ -30,8 +30,6 @@ def _get_dataset(filepath):
     """
     return pandas.read_csv(filepath, header='infer')
 
-
-
 def _get_file_path(filename):
     """Construct the filepath string, takes name of file as arg
 
@@ -101,6 +99,7 @@ def append_result_col(data, result):
     result.columns = ['y']
     return data.join(result)
 
+# Task 1 naive
 def randomize_data(dataframe):
     """dumb randomize, no discretization
 
@@ -109,6 +108,7 @@ def randomize_data(dataframe):
     """
     return dataframe.sample(frac=1)
 
+# Task 1
 def balance_by_class(X, y, size=None, allow_imbalance=False):
     """Select a sample of the data with a balanced class distribution
 
