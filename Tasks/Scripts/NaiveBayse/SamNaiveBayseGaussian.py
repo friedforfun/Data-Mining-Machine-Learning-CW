@@ -36,6 +36,8 @@ def nbg_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, 
         X = pd.DataFrame(data=X)
         y = pd.DataFrame(data=y)
         X, y = helperfn.balance_by_class(X, y)
+        X = X.astype(int)
+        y = y.astype(int)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
     classifier = GaussianNB().fit(X_train, y_train)
