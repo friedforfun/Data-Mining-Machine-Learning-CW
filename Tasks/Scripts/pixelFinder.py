@@ -4,7 +4,7 @@ from . import helperfn as hf
 import matplotlib.pyplot as plt
 
 
-def bestPixels(label, n):
+def bestPixels(label, n, downscale=False):
     """Get n number of best pixels indexes from dataset label
 
     :param label: label_def as defined in helperfn
