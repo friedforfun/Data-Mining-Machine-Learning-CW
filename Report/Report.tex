@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry} 
+
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{minted}
+
+\title{Data Mining \& ML}
+\author{lewiswilson1497 }
+\date{November 2020}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+%TABLE OF CONTENTS
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+\setcounter{page}{1}
+
+\pagebreak
+
+
+\section{File management, data pre-processing, transformation and selection}
+
+test
+
+\subsection{File Management}
+
+\subsection{Data pre-processing}
+
+\subsection{Transformation and selection}\label{sec:transSel}
+
+
+\pagebreak
+
+\section{Naive Bayesian Networks}
+
+\pagebreak
+
+\section{Complex Bayes nets}
+\emph{Describe \& analyse the problem. Show all experiments complete with graphs and tables. Discuss produced software quality \& discuss interesting properties of the data and algorithms}
+
+\subsection{Building Bayse Networks}
+Bayse networks represent probablistic directed acyclic graphs that define the relationshps between conditional dependencies and random variables.
+A naive Bayesian network can be represented in a Bayse network where the node representing the probability distribution of the class is the only parent of all other nodes and no other edges exist in the network. 
+By adding additional edges (so long as the graph remains acyclic) we can represent causal relations between random variables.
+
+
+We decided to approach this task using both Weka and Python, with the intention of verifying our results against the other.
+Attempting to build the network both ways gave us solid insights into the problems that would have to be solved to produce a Bayse Network.
+We decided to use the pgmpy library to build our Bayse Networks in python, this immediately presented us with 2 computational complexity problems:
+\begin{enumerate}
+    \item Building all the conditional probability factors.
+    \item Learning the optimal edges.
+\end{enumerate}
+
+*We handled the first problem by discretizing the greyscale values using equal width and frequency binning (see section~\ref{sec:transSel})*
+When using Weka to compute Baysian networks we observed that Weka would perform extremely aggressive binning of the greyscale values often discretizing down to only 2 bins. This had a profound effect on the speed of learning the parameters and edges.
+
+\subsection{Algorithms \& Data}
+
+
+
+\subsection{Experimental Results}
+
+
+\pagebreak
+
+\section{Clustering}
+
+
+
+
+
+
+\end{document}

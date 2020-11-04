@@ -31,8 +31,10 @@ def downscale_image(image, downscale_shape=(2, 2)):
     downscaled = downscaled.flatten()
     return downscaled
 
+
 def rescale_image(image, rescale_amt=0.25):
     """rescale an image vector
+
     :param image: The image vector to downscale
     :type image: numpy.array
     :param downscale_shape: The degree of downscaling to perform on each asix, defaults to (2, 2)

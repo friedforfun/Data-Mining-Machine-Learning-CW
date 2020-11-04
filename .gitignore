@@ -137,6 +137,7 @@ dmypy.json
 
 # ignore the huge data file
 x_train_gr_smpl.csv
+equal_width_binning.csv
 
 # APPLE garbage
 */__MACOSX/*

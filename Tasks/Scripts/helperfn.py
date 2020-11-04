@@ -30,8 +30,6 @@ def _get_dataset(filepath):
     """
     return pandas.read_csv(filepath, header='infer')
 
-
-
 def _get_file_path(filename):
     """Construct the filepath string, takes name of file as arg
 
@@ -56,6 +54,19 @@ def get_random_data(result_id=-1):
     x = full_data.drop('y', 1)
     return x, y
 
+def get_ewb_data(result_id=-1):
+    """Get a tuple of the result and data csv where the data is using equal width binning
+
+    :param result_id: The index of the result datafile, defaults to -1
+    :type result_id: int, optional
+    :return: A tuple of the data collection
+    :rtype: (pandas.df, pandas.df)
+    """
+    x = _get_dataset(_get_file_path('equal_width_binning.csv'))
+    filePicker = result_files.get(result_id, 'y_train_smpl.csv')
+    y = _get_dataset(_get_file_path(filePicker))
+    y.columns = ['y']
+    return x, y
 
 def get_data(result_id=-1):
     """Get a tuple of the result and data csv
@@ -101,6 +112,7 @@ def append_result_col(data, result):
     result.columns = ['y']
     return data.join(result)
 
+# Task 1 naive
 def randomize_data(dataframe):
     """dumb randomize, no discretization
 
@@ -109,6 +121,7 @@ def randomize_data(dataframe):
     """
     return dataframe.sample(frac=1)
 
+# Task 1
 def balance_by_class(X, y, size=None, allow_imbalance=False):
     """Select a sample of the data with a balanced class distribution
 
@@ -144,4 +157,4 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
             frame = frame.append(df.head(size))
     y_res = frame[['y']]
     X_res = frame.drop('y', 1)
-    return X_res.astype(int), y_res.astype(int)
+    return X_res, y_res
