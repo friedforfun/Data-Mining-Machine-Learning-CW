@@ -55,7 +55,7 @@ def nbg_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, 
     return classifier, (score_train, score_test), (X_train, X_test, y_train, y_test)
 
 
-def build_nbg_models(downscale=False, downscale_shape=(2,2), **kwargs):
+def build_nbg_models(downscale=False, downscale_shape=(2, 2), print_scores=True,**kwargs):
     """Build and score naive bayse gaussian model
 
     :param downscale: Downscale the images by a factor defined in downscale_shape param
@@ -74,7 +74,8 @@ def build_nbg_models(downscale=False, downscale_shape=(2,2), **kwargs):
 
     for i in range(0, 11):
         results = helperfn.get_results(result_id=i-1)
-        print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
+        if print_scores:
+            print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
         classifer, score, data = nbg_model_custom_data(
             training_smpl, results, **kwargs, data_label=i-1)
         classifiers += [classifer]
@@ -82,24 +83,6 @@ def build_nbg_models(downscale=False, downscale_shape=(2,2), **kwargs):
         train_test_data += [data]
 
     return classifiers, scores, train_test_data
-
-def build_confusion_matrix(classifiers, data):
-    """Build the confusion matrices
-
-    :param classifiers: a list of all the classifiers to generate confusion matrices for
-    :type classifiers: List: sklearn.naive_bayes.CategoricalNB
-    :param data: List of the Train and testing data
-    :return: List: sklearn.metrics.confusion_matrix
-    """
-    train_confusion = []
-    confusion = []
-    # build confusion matrices for all classifiers
-    for i in range(len(classifiers)):
-        cmt = confusion_matrix(data[i][2], classifiers[i].predict(data[i][0]))
-        cm = confusion_matrix(data[i][3], classifiers[i].predict(data[i][1]))
-        confusion = confusion + [cm]
-        train_confusion += [cmt]
-    return train_confusion, confusion
 
 label_def = {
     -1: 'All Classes',

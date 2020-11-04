@@ -1,4 +1,6 @@
 import pandas
+import matplotlib.pyplot as plt
+import math
 import numpy as np
 import os.path
 
@@ -112,7 +114,7 @@ def append_result_col(data, result):
     result.columns = ['y']
     return data.join(result)
 
-# Task 1 naive
+
 def randomize_data(dataframe):
     """dumb randomize, no discretization
 
@@ -121,7 +123,7 @@ def randomize_data(dataframe):
     """
     return dataframe.sample(frac=1)
 
-# Task 1
+
 def balance_by_class(X, y, size=None, allow_imbalance=False):
     """Select a sample of the data with a balanced class distribution
 
@@ -158,3 +160,4 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
     y_res = frame[['y']]
     X_res = frame.drop('y', 1)
     return X_res, y_res
+

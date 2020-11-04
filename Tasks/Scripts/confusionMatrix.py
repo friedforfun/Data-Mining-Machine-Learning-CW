@@ -140,6 +140,25 @@ def _calc_kappa(p_observed, p_chance):
     return (p_observed - p_chance) / (1 - p_chance)
 
 
+def build_confusion_matrix(classifiers, data):
+    """Build the confusion matrices using collections of classifiers and data
+
+    :param classifiers: a list of all the classifiers to generate confusion matrices for
+    :type classifiers: List: sklearn.naive_bayes.CategoricalNB
+    :param data: List of the Train and testing data
+    :return: List: sklearn.metrics.confusion_matrix
+    """
+    train_confusion = []
+    confusion = []
+    # build confusion matrices for all classifiers
+    for i in range(len(classifiers)):
+        cmt = confusion_matrix(data[i][2], classifiers[i].predict(data[i][0]))
+        cm = confusion_matrix(data[i][3], classifiers[i].predict(data[i][1]))
+        confusion = confusion + [cm]
+        train_confusion += [cmt]
+    return train_confusion, confusion
+
+
 label_def = {
     -1: 'All Classes',
     0: 'speed limit 20',
