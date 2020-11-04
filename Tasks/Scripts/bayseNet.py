@@ -74,14 +74,14 @@ def model_with_params(data, edges, estimator=MaximumLikelihoodEstimator, **kwarg
     """
     model = BayesianModel(edges.edges)
     print(model.nodes)
-    model.fit(data=data, estimator=estimator)
+    model.fit(data=data, estimator=estimator, **kwargs)
     return model
 
 def get_inference_model(model):
     model.check_model()
     return VariableElimination(model)
 
-def score_model(model, test_data, labels, result_label='y', verbose=False):
+def score_model(model, test_data, labels, result_label='y'):
     """Produce a score for the model by testing all the test_data against the labels
 
     :param model: A model with edges and parameters defined
@@ -98,6 +98,7 @@ def score_model(model, test_data, labels, result_label='y', verbose=False):
   
     good_pred = 0
     for i in range(test_data.shape[0]):
+        print('looping')
         ev = test_data.iloc[i].to_dict()
 
         q = model.query(variables=[result_label], evidence=ev)
@@ -105,6 +106,7 @@ def score_model(model, test_data, labels, result_label='y', verbose=False):
 
         if pred == labels.iloc[i].values[0]:
             good_pred += 1
+
     score = good_pred / test_data.shape[0]
     print()
     print()
