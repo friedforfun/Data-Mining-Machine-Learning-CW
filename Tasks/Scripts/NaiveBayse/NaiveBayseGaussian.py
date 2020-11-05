@@ -1,15 +1,9 @@
-from sklearn.metrics import confusion_matrix, accuracy_score, ConfusionMatrixDisplay, cohen_kappa_score, plot_confusion_matrix
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import RFE
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from .. import helperfn
 from .. import downsample as ds
-from itertools import product
-
-
 
 
 def nbg_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True):

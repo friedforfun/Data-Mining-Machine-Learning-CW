@@ -163,7 +163,7 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
 
     return X_res.astype(int), y_res.astype(int)
 
-def ewb(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
+def get_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
     """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
 
     :param bin_names: list of bin names
@@ -177,6 +177,27 @@ def ewb(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159,
         raise ValueError("Not enough or too many bin labels provided")
 
     df = get_data_noresults()
+
+    for column in df:
+        df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
+
+    return df
+
+
+def mutate_to_ewb(data, bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
+    """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
+
+    :param bin_names: list of bin names
+    :type bin_names: list
+    :param bin_ranges: list of bin ranges
+    :type bin_ranges: list
+    :return: the sample and labels
+    :rtype: pandas.df
+    """
+    if len(bin_names)+1 != len(bin_ranges):
+        raise ValueError("Not enough or too many bin labels provided")
+
+    df = data
 
     for column in df:
         df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
