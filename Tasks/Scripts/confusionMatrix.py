@@ -42,8 +42,9 @@ def show_confusion_matrix(confusion, index_range=(0, 10), kappas=None):
             cmd = ConfusionMatrixDisplay(confusion[i], display_labels=[
                                          i for i in range(0, 10)])
             cmd.plot(ax=ax[i])
-            if kappas is not None:
-                cmd.ax_.set_title(f'All classes\nKappa: {kappa}', fontsize=20)
+            if not kappas is None:
+                cmd.ax_.set_title(
+                    f'All classes\nKappa: {kappa}', fontsize=20)  # type: ignore
             else:
                 cmd.ax_.set_title('All classes', fontsize=20)
         else:
@@ -51,8 +52,8 @@ def show_confusion_matrix(confusion, index_range=(0, 10), kappas=None):
                 confusion[i], display_labels=['True', 'False'])
             cmd.plot(ax=ax[i])
             label = label_def.get(i, i)
-            if kappas is not None:
-                cmd.ax_.set_title(f'{label}\n Kappa: {kappa}', fontsize=20)
+            if not kappas is None:
+                cmd.ax_.set_title(f'{label}\n Kappa: {kappa}', fontsize=20)  # type: ignore
             else:
                 cmd.ax_.set_title(f'{label}', fontsize=20)
 
