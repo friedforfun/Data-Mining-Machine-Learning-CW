@@ -7,7 +7,7 @@ from .. import downsample as ds
 import numpy as np
 
 
-def nbc_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True):
+def nbc_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True, size=None, allow_imbalance=False):
     """Build classifiers, scores, and data from supplied dataset
 
     :param X: The data
@@ -32,12 +32,14 @@ def nbc_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, 
     if balance_classes:
         X = pd.DataFrame(data=X)
         y = pd.DataFrame(data=y)
-        X, y = helperfn.balance_by_class(X, y)
+        X, y = helperfn.balance_by_class(
+            X, y, size=size, allow_imbalance=allow_imbalance, random_state=random_state)
         X = X.astype(int)
         y = y.astype(int)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-    classifier = CategoricalNB().fit(X_train, y_train)
+    classifier = CategoricalNB()
+    classifier = classifier.fit(X_train, y_train)
     score_train = classifier.score(X_train, y_train)
     score_test = classifier.score(X_test, y_test)
 
