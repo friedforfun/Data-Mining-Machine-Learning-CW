@@ -41,14 +41,42 @@ def plot_images(data, n=5):
 
 
 def unzip_scores(score):
+    """unzip scores into 2 seperate lists
+
+    :param score: list of score tuples
+    :type score: list(float, float)
+    :return: 2 numpy arrays
+    :rtype: (np.array, np.array)
+    """
     return np.array([i for i, j in score]), np.array([j for i, j in score])
 
 def convert_percentage(score_tuple):
+    """multiply the given numpy arrays in the tuple by 100
+
+    :param score_tuple: np.array of scores within tuple
+    :type score_tuple: (np.array, np.array)
+    :return: scores * 100
+    :rtype: (np.array, np.array)
+    """
     return score_tuple[0] * 100, score_tuple[1] * 100
 
 
 def plot_scores(scores, group_labels, title='Scores for each classifier', bar_width=0.15, labels=g_labels, figure_size=(14, 8)):
+    """Plot the contents of scores as a bar graph
 
+    :param scores: A list containing lists of values to plot
+    :type scores: list(list(number))
+    :param group_labels: A list of labels for each sub-element in scores
+    :type group_labels: list(string)
+    :param title: Set the title of the figure, defaults to 'Scores for each classifier'
+    :type title: str, optional
+    :param bar_width: define the width of the bars, defaults to 0.15
+    :type bar_width: float, optional
+    :param labels: Specify the x-axis labels, defaults to g_labels
+    :type labels: list(string), optional
+    :param figure_size: size of the figure, defaults to (14, 8)
+    :type figure_size: tuple, optional
+    """
     num_groups = len(group_labels)
     x = np.arange(len(labels))
     
