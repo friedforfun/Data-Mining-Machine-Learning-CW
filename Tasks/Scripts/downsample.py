@@ -31,6 +31,23 @@ def downscale_image(image, downscale_shape=(2, 2)):
     downscaled = downscaled.flatten()
     return downscaled
 
+
+def rescale_image(image, rescale_amt=0.25):
+    """rescale an image vector
+
+    :param image: The image vector to downscale
+    :type image: numpy.array
+    :param downscale_shape: The degree of downscaling to perform on each asix, defaults to (2, 2)
+    :type downscale_shape: tuple, optional
+    :return: The image vector but downscaled
+    :rtype: numpy.array
+    """
+    d = int(round(math.sqrt(image.shape[0]), 0))
+    image = image.reshape(d, d)
+    rescaled = rescale(image, rescale_amt, anti_aliasing=False)
+    rescaled = rescaled.flatten()
+    return rescaled
+
 def visualise_downsample(img):
     """Display the image & its downsampled versions
     From: https://scikit-learn.org/stable/auto_examples/miscellaneous/plot_display_object_visualization.html#sphx-glr-auto-examples-miscellaneous-plot-display-object-visualization-py

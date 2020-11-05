@@ -1,79 +1,100 @@
-from sklearn.metrics import confusion_matrix, accuracy_score, ConfusionMatrixDisplay
-from sklearn.naive_bayes import CategoricalNB, MultinomialNB
+from sklearn.naive_bayes import CategoricalNB
 from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import RFE
-import matplotlib.pyplot as plt
+import pandas as pd
 from .. import helperfn
+from .. import downsample as ds
 
 import numpy as np
 
-def build_nbc_models(test_size=0.2, random_state=0):
-    """Build and score naive bayse categorical model
 
+def nbc_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True, size=None, allow_imbalance=False):
+    """Build classifiers, scores, and data from supplied dataset
+
+    :param X: The data
+    :type X: np.array
+    :param y: The data labels
+    :type y: np.array
+    :param data_label: An integer identifier for the labels, defaults to None
+    :type data_label: int, optional
     :param test_size: the percentage of the sample size to test with, defaults to 0.2
     :type test_size: float, optional
     :param random_state: the random seed, defaults to 0
     :type random_state: int, optional
+    :param balance_classes: Set to true to create a balanced class distribution, defaults to False
+    :type balance_classes: bool, optional
+    :param print_scores: display the scores, defaults to True
+    :type print_scores: bool, optional
+    :return: The classifier, scores, and data
+    :rtype: (CategoricalNB, (training_scores, testing_scores), (sklearn.train_test_split))
+    """
+    
+
+    if balance_classes:
+        X = pd.DataFrame(data=X)
+        y = pd.DataFrame(data=y)
+        X, y = helperfn.balance_by_class(
+            X, y, size=size, allow_imbalance=allow_imbalance, random_state=random_state)
+        X = X.astype(int)
+        y = y.astype(int)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+    classifier = CategoricalNB()
+    classifier = classifier.fit(X_train, y_train)
+    score_train = classifier.score(X_train, y_train)
+    score_test = classifier.score(X_test, y_test)
+
+    if print_scores:
+        if data_label is not None:
+            print("Scores for dataset: ", label_def.get(data_label, data_label))
+        print("Training data score: ", score_train)
+        print("Testing data score: ", score_test)
+        print("--------------------------------------")
+
+    return classifier, (score_train, score_test), (X_train, X_test, y_train, y_test)
+
+
+def build_nbc_models(downscale=False, downscale_shape=(2,2), ewb=False, **kwargs):
+    """Build and score naive bayse categorical model
+
+    :param downscale: Downscale the images by a factor defined in downscale_shape param
+    :type downscale: bool, optional
+    :param downscale_shape: The degree of downscaling on each axis, defaults to (2,2)
+    :type downscale_shape: tuple, optional
     :return: Tuple of List: classifers, List: scores, List: traing & testing data
     :rtype: Tuple(List, List, List)
     """
     training_smpl = helperfn.get_data_noresults()
-    raw_data_results = []
+    if downscale:
+        training_smpl = ds.downscale(training_smpl, downscale_shape=downscale_shape)
+    if ewb:
+        training_smpl = helperfn.mutate_to_ewb(pd.DataFrame(training_smpl))
 
     train_test_data = []
     classifiers = []
     scores = []
 
-    for i in range(-1, 10):
-        raw_data_results = raw_data_results + [helperfn.get_results(result_id=i)]
-        print('Dataset: ', i, ' Has results:', np.unique(raw_data_results[i].to_numpy()))
-        train_test_data = train_test_data + [train_test_split(training_smpl, raw_data_results[i], test_size=test_size, random_state=random_state)]
-        classifiers = classifiers + [CategoricalNB().fit(train_test_data[i][0], train_test_data[i][2])]
-        scores = scores + [(classifiers[i].score(train_test_data[i][0], train_test_data[i][2]),
-                            classifiers[i].score(train_test_data[i][1], train_test_data[i][3]))]
 
-    for i in range(len(scores)):
-        print("Scores for dataset: ", i-1)
-        print("Training data score: ", scores[i][0])
-        print("Testing data score: ", scores[i][1])
-        print("--------------------------------------")
+    for i in range(0, 11):
+        results = helperfn.get_results(result_id=i-1)
+        print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
+        classifer, score, data = nbc_model_custom_data(
+            training_smpl, results, **kwargs, data_label=i-1)
+        classifiers += [classifer]
+        scores += [score]
+        train_test_data += [data]
 
     return classifiers, scores, train_test_data
 
-def build_confusion_matrix(classifiers, data):
-    """Build the confusion matrices
-
-    :param classifiers: a list of all the classifiers to generate confusion matrices for
-    :type classifiers: List: sklearn.naive_bayes.CategoricalNB
-    :param data: List of the Train and testing data
-    :return: List: sklearn.metrics.confusion_matrix
-    """
-    test_confusion = []
-    train_confusion = []
-    # build confusion matrices for all classifiers
-    for i in range(len(classifiers)):
-        cmt = confusion_matrix(data[i][2], classifiers[i].predict(data[i][0]))
-        train_confusion += [cmt]
-        cm = confusion_matrix(data[i][3], classifiers[i].predict(data[i][1]))
-        test_confusion = test_confusion + [cm]
-    return train_confusion, test_confusion
-
-def show_confusion_matrix(confusion, index_range=(0, 11)):
-    for i in range(index_range[0],index_range[1]):
-        if i == 0:
-            # special case labels
-            cmd = ConfusionMatrixDisplay(
-                confusion[i], display_labels=['20', '30', '50', '60', '70', 'left', 'right', 'ped Xing', 'beware childer', 'cycle route'])
-        else:
-            cmd = ConfusionMatrixDisplay(confusion[i], display_labels=['yes', 'no'])
-        cmd.plot()
-
-# Silly feature selection
-def feature_sel(test_size=0.9, random_state=0):
-    training_smpl = helperfn.get_data_noresults()
-    raw_data_results = helperfn.get_results(result_id=8)
-    X_train, X_test, y_train, y_test = train_test_split(
-        training_smpl, raw_data_results, test_size=test_size, random_state=random_state)
-    selector = RFE(MultinomialNB(), n_features_to_select=10, step=1)
-    selector.fit(X_train, y_train)
-    return selector, X_test, y_test
+label_def = {
+    -1: 'All Classes',
+    0: 'speed limit 20',
+    1: 'speed limit 30',
+    2: 'speed limit 50',
+    3: 'speed limit 60',
+    4: 'speed limit 70',
+    5: 'left turn',
+    6: 'right turn',
+    7: 'beware pedestrian crossing',
+    8: 'beware children',
+    9: 'beware cycle route ahead'
+}
