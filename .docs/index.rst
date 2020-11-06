@@ -6,7 +6,28 @@
 Welcome to Data Mining & Machine Learning Coursework's documentation!
 =====================================================================
 
-.. automodule:: Scripts.NaiveBayse.SamNaiveBayseGaussian
+.. automodule:: Scripts.wekaConversion
+    :members:
+
+.. automodule:: Scripts.bayseNet
+    :members:
+
+.. automodule:: Scripts.confusionMatrix
+    :members:
+
+.. automodule:: Scripts.plotScripts
+    :members:
+
+.. automodule:: Scripts.pixelFinder
+    :members:
+
+.. automodule:: Scripts.downsample
+    :members:
+
+.. automodule:: Scripts.NaiveBayse.NaiveBayseCategorical
+    :members:
+
+.. automodule:: Scripts.NaiveBayse.NaiveBayseGaussian
     :members:
 
 .. automodule:: Scripts.helperfn

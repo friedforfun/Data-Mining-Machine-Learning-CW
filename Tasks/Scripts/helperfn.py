@@ -1,4 +1,6 @@
 import pandas
+import matplotlib.pyplot as plt
+import math
 import numpy as np
 import os.path
 
@@ -30,8 +32,6 @@ def _get_dataset(filepath):
     """
     return pandas.read_csv(filepath, header='infer')
 
-
-
 def _get_file_path(filename):
     """Construct the filepath string, takes name of file as arg
 
@@ -56,6 +56,19 @@ def get_random_data(result_id=-1):
     x = full_data.drop('y', 1)
     return x, y
 
+def get_ewb_data(result_id=-1):
+    """Get a tuple of the result and data csv where the data is using equal width binning
+
+    :param result_id: The index of the result datafile, defaults to -1
+    :type result_id: int, optional
+    :return: A tuple of the data collection
+    :rtype: (pandas.df, pandas.df)
+    """
+    x = _get_dataset(_get_file_path('equal_width_binning.csv'))
+    filePicker = result_files.get(result_id, 'y_train_smpl.csv')
+    y = _get_dataset(_get_file_path(filePicker))
+    y.columns = ['y']
+    return x, y
 
 def get_data(result_id=-1):
     """Get a tuple of the result and data csv
@@ -101,6 +114,7 @@ def append_result_col(data, result):
     result.columns = ['y']
     return data.join(result)
 
+
 def randomize_data(dataframe):
     """dumb randomize, no discretization
 
@@ -109,7 +123,8 @@ def randomize_data(dataframe):
     """
     return dataframe.sample(frac=1)
 
-def balance_by_class(X, y, size=None, allow_imbalance=False):
+
+def balance_by_class(X, y, size=None, allow_imbalance=False, random_state=0):
     """Select a sample of the data with a balanced class distribution
 
     :param X: data
@@ -123,13 +138,17 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
     :return: the sample and labels
     :rtype: tuple(pandas.df, pandas.df)
     """
+    # combine data labels
     data = append_result_col(X, y)
+
+    # get unique classes
     classes = np.unique(y)
+
     datasets = []
     smallest_size = data.shape[0]
     for i in range(len(classes)):
         temp_sample = data[data['y'] == classes[i]]
-        datasets += [temp_sample.sample(frac=1)]
+        datasets += [temp_sample.sample(frac=1, random_state=random_state)]
         if temp_sample.shape[0] < smallest_size:
             smallest_size = temp_sample.shape[0]
     frame = pandas.DataFrame(columns=data.columns)
@@ -137,11 +156,54 @@ def balance_by_class(X, y, size=None, allow_imbalance=False):
         for df in datasets:
             frame = frame.append(df.head(smallest_size))
     else:
-        if allow_imbalance and size > smallest_size:
+        if not allow_imbalance and size > smallest_size:
             raise ValueError(
                 "Size argument is too large for a balanced dataset")
         for df in datasets:
             frame = frame.append(df.head(size))
     y_res = frame[['y']]
     X_res = frame.drop('y', 1)
-    return X_res.astype(int), y_res.astype(int)
+    return X_res, y_res
+
+def get_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
+    """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
+
+    :param bin_names: list of bin names
+    :type bin_names: list
+    :param bin_ranges: list of bin ranges
+    :type bin_ranges: list
+    :return: the sample and labels
+    :rtype: pandas.df)
+    """
+    if len(bin_names)+1 != len(bin_ranges):
+        raise ValueError("Not enough or too many bin labels provided")
+
+    df = get_data_noresults()
+
+    for column in df:
+        df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
+
+    return df
+
+named_bins = ['black', 'very dark grey', 'dark grey', 'semi-dark grey', 'semi-light grey', 'light grey', 'very-light grey', 'white']
+numbered_bins = [0, 1, 2, 3, 4, 5, 6, 7]
+
+def mutate_to_ewb(data, bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
+    """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
+
+    :param bin_names: list of bin names
+    :type bin_names: list
+    :param bin_ranges: list of bin ranges
+    :type bin_ranges: list
+    :return: the sample and labels
+    :rtype: pandas.df
+    """
+    if len(bin_names)+1 != len(bin_ranges):
+        raise ValueError("Not enough or too many bin labels provided")
+
+    df = data
+
+    for column in df:
+        df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
+
+    return df
