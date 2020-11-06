@@ -17,7 +17,54 @@ label_def = {
 }
 
 
+
+
 g_labels = [label_def.get(i) for i in range(-1, 10)]
+
+def plot_line_graph(data_to_plot, x_label_text='Pixel by rank', y_label_text='Accuracy(%)', title_text='Class by class pixel selection accuracy'):
+
+    """Generate n images from the dataset 
+
+    :param data_to_plot: A list containing the np arrays to plot
+    :type data_to_plot: list[np.array]
+    :param number_of_lines_to_plot: The number of lines to plot
+    :type number_of_lines_to_plot: int, optional
+    :param x_label_text: The label of the x axis 
+    :type x_label_text: string, optional
+    :param y_label_text: The label of the y axis
+    :type y_label_text: string, optional
+    :param title_text: The title of the graph
+    :type title_text: string, optional
+    """
+
+    number_of_lines_to_plot = data_to_plot.shape[1]
+
+    line_holder = []
+
+    # The amount of points to plot on the x-axis
+    number_of_points = data_to_plot[:,0].shape[0] + 1 
+
+    # Creat the x axis
+    x_axis = [i for i in range(1, number_of_points)]
+
+    #add our lines to a linder holder list
+    for i in range(data_to_plot.shape[1]):
+        line_holder.append(data_to_plot[:,i])
+
+    # Sets the size of the chart
+    fig, ax = plt.subplots(figsize=(15, 15))
+
+    # add lines to chart
+    # add labels
+    for i in range(number_of_lines_to_plot):
+        ax.plot(x_axis,line_holder[i],label=label_def[i-1])
+
+    # add legends to the graph
+    ax.legend()
+
+    ax.set(xlabel=x_label_text, ylabel=y_label_text, title=title_text)
+    ax.grid()
+    plt.show()
 
 def plot_images(data, n=5):
     """Generate n images from the dataset 
