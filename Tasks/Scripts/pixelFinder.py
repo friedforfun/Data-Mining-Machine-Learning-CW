@@ -1,9 +1,10 @@
 import numpy as np
 from . import helperfn as hf
+# from NaiveBayse import SamNaiveBayseGaussian as nbg
 import matplotlib.pyplot as plt
 
 
-def bestPixels(label, n):
+def bestPixels(label, n, downscale=False):
     """Get n number of best pixels indexes from dataset label
 
     :param label: label_def as defined in helperfn
@@ -66,3 +67,55 @@ def showHeatmap(index_range=(0, 10)):
         fig.colorbar(cax)
 
         plt.show()
+
+
+def get_top_pixels(n):
+    """Get the top n pixels for all datasets
+
+    :param n: The number of pixels to get
+    :type n: int
+    :return: a list containing 11 lists of column indices, each for the different classification
+    :rtype: List[List[int]]
+    """
+    pixel_order = []
+    for i in range(-1, 10):
+        pixel_order.append(np.array(bestPixels(i, n)))
+    return pixel_order
+
+
+def data_lists():
+    """ Lists of the dataset and the result column
+
+    :return: a list containing 11 lists, each containing X and y data
+    :rtype: List
+    """
+    data = []
+    for i in range(-1, 10):
+        data.append(hf.get_data(i))
+    return data
+
+
+# def build_classifiers(data, pixel_order, balance_classes=False):
+#     """ Build classifiers based on the pixel order, for 11 datasets
+
+#     :param data: the data to use to build the classifier
+#     :type data: np.array
+#     :param pixel_order: A list of pixels by priority
+#     :type pixel_order: List[int]
+#     :param balance_classes: Balance the class distribution or not, defaults to False
+#     :type balance_classes: bool, optional
+#     :return: The classifier, scores and dataset for these parameters
+#     :rtype: Tuple(List[classifer], List[scores], List[datasets])
+#     """
+#     classifiers = []
+#     scores = []
+#     dataset = []
+#     for i in range(1, 11):
+#         X = np.take(data[i][0], pixel_order[i], axis=1)
+#         classifier, score, local_data = nbg.nbg_model_custom_data(
+#             X, y, data_label=i-1, balance_classes=balance_classes)
+#         classifiers += [classifier]
+#         scores += [scores]
+#         dataset += [local_data]
+
+#     return classifiers, scores, dataset

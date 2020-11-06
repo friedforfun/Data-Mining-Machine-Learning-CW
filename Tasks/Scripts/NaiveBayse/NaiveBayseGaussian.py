@@ -1,13 +1,12 @@
-from sklearn.naive_bayes import CategoricalNB
+from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
+import numpy as np
 import pandas as pd
 from .. import helperfn
 from .. import downsample as ds
 
-import numpy as np
 
-
-def nbc_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True, size=None, allow_imbalance=False):
+def nbg_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, balance_classes=False, print_scores=True):
     """Build classifiers, scores, and data from supplied dataset
 
     :param X: The data
@@ -25,21 +24,18 @@ def nbc_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, 
     :param print_scores: display the scores, defaults to True
     :type print_scores: bool, optional
     :return: The classifier, scores, and data
-    :rtype: (CategoricalNB, (training_scores, testing_scores), (sklearn.train_test_split))
+    :rtype: (GaussianNB, (training_scores, testing_scores), (sklearn.train_test_split))
     """
     
-
     if balance_classes:
         X = pd.DataFrame(data=X)
         y = pd.DataFrame(data=y)
-        X, y = helperfn.balance_by_class(
-            X, y, size=size, allow_imbalance=allow_imbalance, random_state=random_state)
+        X, y = helperfn.balance_by_class(X, y)
         X = X.astype(int)
         y = y.astype(int)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-    classifier = CategoricalNB()
-    classifier = classifier.fit(X_train, y_train)
+    classifier = GaussianNB().fit(X_train, y_train)
     score_train = classifier.score(X_train, y_train)
     score_test = classifier.score(X_test, y_test)
 
@@ -53,8 +49,8 @@ def nbc_model_custom_data(X, y, data_label=None, test_size=0.2, random_state=0, 
     return classifier, (score_train, score_test), (X_train, X_test, y_train, y_test)
 
 
-def build_nbc_models(downscale=False, downscale_shape=(2,2), ewb=False, **kwargs):
-    """Build and score naive bayse categorical model
+def build_nbg_models(downscale=False, downscale_shape=(2, 2), print_scores=True,**kwargs):
+    """Build and score naive bayse gaussian model
 
     :param downscale: Downscale the images by a factor defined in downscale_shape param
     :type downscale: bool, optional
@@ -66,18 +62,15 @@ def build_nbc_models(downscale=False, downscale_shape=(2,2), ewb=False, **kwargs
     training_smpl = helperfn.get_data_noresults()
     if downscale:
         training_smpl = ds.downscale(training_smpl, downscale_shape=downscale_shape)
-    if ewb:
-        training_smpl = helperfn.mutate_to_ewb(pd.DataFrame(training_smpl))
-
     train_test_data = []
     classifiers = []
     scores = []
 
-
     for i in range(0, 11):
         results = helperfn.get_results(result_id=i-1)
-        print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
-        classifer, score, data = nbc_model_custom_data(
+        if print_scores:
+            print('Dataset: ', i-1, ' Has results:',np.unique(results.to_numpy()))
+        classifer, score, data = nbg_model_custom_data(
             training_smpl, results, **kwargs, data_label=i-1)
         classifiers += [classifer]
         scores += [score]
