@@ -165,7 +165,7 @@ def balance_by_class(X, y, size=None, allow_imbalance=False, random_state=0):
     X_res = frame.drop('y', 1)
     return X_res, y_res
 
-def get_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
+def convert_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
     """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
 
     :param bin_names: list of bin names

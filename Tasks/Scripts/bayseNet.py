@@ -9,6 +9,16 @@ from Scripts import helperfn as hf
 from Scripts import pixelFinder as pf
 
 
+def get_naive_edges(pixels, label='y'):
+    """
+
+    :param pixels: [description]
+    :type pixels: [type]
+    :return: [description]
+    :rtype: [type]
+    """
+    edges = [(i, label) for i in list(map(str, pixels))]
+    return edges
 
 def estimate_model_edges(data, scorer='k2', learning_algo='HillClimb', max_indegree=4, max_iter=int(1e4), equivalent_sample_size=8):
     """Estimate the edges of the model given some training data (with labels)
@@ -72,7 +82,7 @@ def model_with_params(data, edges, estimator=MaximumLikelihoodEstimator, **kwarg
     :return: the model with learned parameters
     :rtype: DAG instance
     """
-    model = BayesianModel(edges.edges)
+    model = BayesianModel(edges)
     print(model.nodes)
     model.fit(data=data, estimator=estimator, **kwargs)
     return model
@@ -96,7 +106,11 @@ def score_model(model, test_data, labels, result_label='y'):
     :rtype: float
     """
   
-    good_pred = 0
+    true_positive = 0
+    true_negative = 0
+    false_positive = 0
+    false_negative = 0
+
     for i in range(test_data.shape[0]):
         print('looping')
         ev = test_data.iloc[i].to_dict()
@@ -104,11 +118,17 @@ def score_model(model, test_data, labels, result_label='y'):
         q = model.query(variables=[result_label], evidence=ev)
         pred = np.argmax(q)
 
-        if pred == labels.iloc[i].values[0]:
-            good_pred += 1
+        if labels.iloc[i].values[0] == 0 and pred == 0:
+            true_positive += 1
+        if labels.iloc[i].values[0] == 1 and pred == 1:
+            true_negative += 1
+        if labels.iloc[i].values[0] == 0 and pred == 1:
+            false_negative += 1
+        if labels.iloc[i].values[0] == 1 and pred == 0:
+            false_positive += 1
 
-    score = good_pred / test_data.shape[0]
+    score = true_positive / test_data.shape[0]
     print()
     print()
     print('Score: ', score)
-    return score
+    return (true_positive, true_negative, false_positive, false_negative)
