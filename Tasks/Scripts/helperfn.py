@@ -232,6 +232,8 @@ def update_progress(progress, message='Loading...'):
 
     :param progress: percentage complete
     :type progress: int/float
+    :param message: A message to display with the progress bar
+    :type message: str
     """
     bar_length = 20
     if isinstance(progress, int):
