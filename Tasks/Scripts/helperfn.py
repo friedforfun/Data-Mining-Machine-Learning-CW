@@ -205,9 +205,12 @@ def to_ewb(data, bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 
         raise ValueError("Not enough or too many bin labels provided")
 
     df = data
-
+    progress = 0
+    total_colums = df.shape[1]
     for column in df:
+        update_progress(progress/total_colums, message='Equal Width Binning Data...')
         df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
+        progress += 1
 
     return df
 
@@ -224,11 +227,13 @@ def data_lists():
     return data
 
 
-def update_progress(progress):
+def update_progress(progress, message='Loading...'):
     """Show progress in loop
 
     :param progress: percentage complete
     :type progress: int/float
+    :param message: A message to display with the progress bar
+    :type message: str
     """
     bar_length = 20
     if isinstance(progress, int):
@@ -244,5 +249,6 @@ def update_progress(progress):
     block = int(round(bar_length * progress))
 
     clear_output(wait=True)
+    print(message)
     text = "Progress: [{0}] {1:.1f}%".format("#" * block + "-" * (bar_length - block), progress * 100)
     print(text)
