@@ -108,7 +108,7 @@ def convert_percentage(score_tuple):
     return score_tuple[0] * 100, score_tuple[1] * 100
 
 
-def plot_scores(scores, group_labels, title='Scores for each classifier', bar_width=0.15, labels=g_labels, figure_size=(14, 8)):
+def plot_scores(scores, group_labels, title='Scores for each classifier', bar_width=0.15, labels=g_labels, figure_size=(14, 8), y_label='% Accuracy'):
     """Plot the contents of scores as a bar graph
 
     :param scores: A list containing lists of values to plot
@@ -134,7 +134,7 @@ def plot_scores(scores, group_labels, title='Scores for each classifier', bar_wi
         score_plots.append(bar)
 
     ax.set_title(title)
-    ax.set_ylabel('% Accuracy')
+    ax.set_ylabel(y_label)
     ax.set_xticks(x + (bar_width * math.floor((num_groups / 2))))
     ax.set_xticklabels(labels, rotation=45)
     ax.legend()
