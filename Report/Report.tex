@@ -33,8 +33,6 @@
 
 \pagebreak
 
-    
-
 \section{File management, data pre-processing, transformation and selection} 
 \subsection{File Management}
 
@@ -55,7 +53,7 @@ provided quick analytics needed for Task 4 \& 5.
 \underline{Downsampling}
 \par
 We have used downsampling (downsampling.py) to get more information about exposing low level features.
-By downsampling images using downsample.py we are able to reduce the image size by averaging 4 pixels into 1. This way we are able to find out what effect each area of the image has on the classification.
+(Figure ~\ref{AvColDSvAvRowDS}) By downsampling images using downsample.py we are able to reduce the image size by averaging 4 pixels into 1. This way we are able to find out what effect each area of the image has on the classification.
 We have also downsampled the image to a 12x12 image (See~\ref{12x12Scatter} )
 By comparing the average greyscale to the row of the pixels, we can see where the
 darkest pixels are located (Lower greyscale value is darker, higher is lighter).
@@ -75,12 +73,12 @@ Since the conditional probability distribution table is smaller, we learned that
 \pagebreak
 
 \section{Naive Bayesian Networks}
-To apply Naive Bayes classifier we have created a script called NaiveBayseCategorical.py 
-/ NaiveBayseGaussian.py which takes care of building NB models using the sklearn Python Library
+To apply Naive Bayes classifier we have created a script called NaiveBayesCategorical.py 
+/ NaiveBayesGaussian.py which takes care of building NB models using the sklearn Python Library
 as well as splitting the data into training and testing which is required to appropriately find 
 out how accurate a NB classifier is.
-\par 
-\subsection{}\label{NaiveBayesEWBConfMat}
+
+\subsection{Equal Width Binning}\label{NaiveBayesEWBConfMat}
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.15]{Images/NaiveBayesEWBMatrices.png}
@@ -105,21 +103,21 @@ Observation: Having unbalanced class distribution negatively affects Naive Bayes
 \par
 \emph{Describe \& analyse the problem. Show all experiments complete with graphs and tables. Discuss produced software quality \& discuss interesting properties of the data and algorithms}
 
-\subsection{Building Bayse Networks}
-Bayse networks represent probablistic directed acyclic graphs that define the relationshps between conditional dependencies and random variables.
-A naive Bayesian network can be represented in a Bayse network where the node representing the probability distribution of the class is the only parent of all other nodes and no other edges exist in the network. 
+\subsection{Building Bayes Networks}
+Bayes networks represent probablistic directed acyclic graphs that define the relationshps between conditional dependencies and random variables.
+A naive Bayesian network can be represented in a Bayes network where the node representing the probability distribution of the class is the only parent of all other nodes and no other edges exist in the network. 
 By adding additional edges (so long as the graph remains acyclic) we can represent causal relations between random variables.
 \par
 We decided to approach this task using both Weka and Python, with the intention of verifying our results against the other.
-Attempting to build the network both ways gave us solid insights into the problems that would have to be solved to produce a Bayse Network.
-We decided to use the pgmpy library to build our Bayse Networks in python, this immediately presented us with 2 computational complexity problems:
+Attempting to build the network both ways gave us solid insights into the problems that would have to be solved to produce a Bayes Network.
+We decided to use the pgmpy library to build our Bayes Networks in python, this immediately presented us with 2 computational complexity problems:
 \begin{enumerate}
     \item Building all the conditional probability factors.
     \item Learning the optimal edges.
 \end{enumerate}
 
 *We handled the first problem by discretizing the greyscale values using equal width and frequency binning (see section~\ref{sec:transSel})*
-When using Weka to compute Baysian networks we observed that Weka would perform extremely aggressive binning of the greyscale values often discretizing down to only 2 bins. This had a profound effect on the speed of learning the parameters and edges.
+When using Weka to compute Bayesian networks we observed that Weka would perform extremely aggressive binning of the greyscale values often discretizing down to only 2 bins. This had a profound effect on the speed of learning the parameters and edges.
 
 \subsection{Algorithms \& Data}
 
@@ -141,7 +139,8 @@ When using Weka to compute Baysian networks we observed that Weka would perform 
 The following are located in the Scripts folder
 \begin{table}[ht]
     \centering
-    \begin{tabular}{p{0.35\linewidth} | p{0.6\linewidth}} 
+    \begin{tabular}{|p{0.35\linewidth} | p{0.6\linewidth}|} 
+      \hline
       \textbf{Module Name}  & \textbf{Description} \\ \hline
       helperfn.py & Provides functions to load and transform with all datasets required. \\ \hline
       downsample.py & Provides functions to downsample images  \\ \hline
@@ -149,9 +148,17 @@ The following are located in the Scripts folder
       bayseNet.py & Provides functions used for getting a score for a model by testing all test data against labels. \\ \hline
       confusionMatrix.py & Provides functions for building and displaying confusion matrices as well as methods for calculating kappa values. \\ \hline
       plotScripts.py & Provides functions for plotting data into graphs \\ \hline
-      wekaConversion.py & Provides functions to convert preprocessed data to be consumable by Weka
+      wekaConversion.py & Provides functions to convert preprocessed data to be consumable by Weka\\
+      \hline
     \end{tabular}
 \end{table}
+
+\newpage
+\subsection{Averaged by Column Downsampled vs Average by Row Downsampled}\label{AvColDSvAvRowDS}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.3]{Images/AvColDS vs AvRowDS.png}
+\end{figure}
 
 \newpage
 \subsection{12x12 Downsampled image}\label{12x12Scatter}
@@ -176,15 +183,14 @@ The following are located in the Scripts folder
   \includegraphics[scale=0.4]{Images/train_2304_pixels.png}
 \end{figure}
 
-
-
+\newpage
 \subsection{Training confusion matrices for Naive Bayes}\label{NaiveBayesConfMatTraining}
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.5]{Images/NaiveBayesConfMatTraining.PNG}
 \end{figure}
 
-
-
+% APPENDICES TO ADD
+% BAR CHART OF PIXEL COMPARISON FROM TASK 5
 \end{appendices}
 \end{document}
