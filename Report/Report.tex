@@ -54,10 +54,10 @@ provided quick analytics needed for Task 4 \& 5.
 \par
 We have used downsampling (downsampling.py) to get more information about exposing low level features.
 (Figure ~\ref{AvColDSvAvRowDS}) By downsampling images using downsample.py we are able to reduce the image size by averaging 4 pixels into 1. This way we are able to find out what effect each area of the image has on the classification.
-We have also downsampled the image to a 12x12 image (See~\ref{12x12Scatter} )
+We have also downsampled the image to a 12x12 image to compare the rows going downwards (See~\ref{12x12Scatter} ).
 By comparing the average greyscale to the row of the pixels, we can see where the
 darkest pixels are located (Lower greyscale value is darker, higher is lighter).
-In the heatmaps (Figure ~\ref{Heatmaps}) we can see that the darkest pixels were the most defining which distinguishes 
+In the heatmaps (Figure ~\ref{Heatmaps}) we can see that the darkest pixels are the most defining which distinguishes 
 each type of street sign.
 \par
 \underline{Balancing}
@@ -73,10 +73,11 @@ Since the conditional probability distribution table is smaller, we learned that
 \pagebreak
 
 \section{Naive Bayesian Networks}
-To apply Naive Bayes classifier we have created a script called NaiveBayesCategorical.py 
+To apply Naive Bayes classifier, we have created scripts called NaiveBayesCategorical.py 
 / NaiveBayesGaussian.py which takes care of building NB models using the sklearn Python Library
 as well as splitting the data into training and testing which is required to appropriately find 
-out how accurate a NB classifier is.
+out how accurate a NB classifier is. From (Figure ~\ref{NaiveBayesEWBConfMat}) we can see that the 
+differences in kappa values between unbalanced and balanced classes, this means that there is overfitting.
 
 \subsection{Equal Width Binning}\label{NaiveBayesEWBConfMat}
 \begin{figure}[h!]
@@ -93,9 +94,15 @@ out how accurate a NB classifier is.
 
 \par
 (Figure ~\ref{train_2304})
+We built algorithms to calculate the best pixels to a given class, which was then used to create
+a list of pixel column numbers where most important pixel is column 0.
+\par
+In (Figure ~\ref{BarChartEWBTrain}) we can observe the accuracy EWB has on each class label. The
+quality of predictions is slightly worse when we do not balance the datasets. Downsampling actually
+has very little impact on the accuracy. We have created the same plot for the 
+Test data (Figure ~\ref{BarChartEWBTest})
 \par
 Observation: Having unbalanced class distribution negatively affects Naive Bayes across the board.
-
 
 \pagebreak
 
@@ -152,6 +159,7 @@ The following are located in the Scripts folder
       \hline
     \end{tabular}
 \end{table}
+% Appendix A.1
 
 \newpage
 \subsection{Averaged by Column Downsampled vs Average by Row Downsampled}\label{AvColDSvAvRowDS}
@@ -177,11 +185,26 @@ The following are located in the Scripts folder
 \end{figure}
 
 \newpage
-\subsection{Training data accuracy}\label{train_2304}
+\subsection{Accuracy of the best pixels for each class}\label{train_2304}
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.4]{Images/train_2304_pixels.png}
 \end{figure}
+
+\newpage
+\subsection{Accuracy of Equal Width Binning on Train data}\label{BarChartEWBTrain}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.6]{Images/BarChartEWBTrain.PNG}
+\end{figure}
+
+\newpage
+\subsection{Accuracy of Equal Width Binning on Test data}\label{BarChartEWBTest}
+  \begin{figure}[h!] 
+    \centering
+    \includegraphics[scale=0.6]{Images/BarChartEWBTest.PNG}
+\end{figure}
+
 
 \newpage
 \subsection{Training confusion matrices for Naive Bayes}\label{NaiveBayesConfMatTraining}
