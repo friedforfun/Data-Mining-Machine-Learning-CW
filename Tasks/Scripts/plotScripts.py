@@ -204,5 +204,25 @@ def plot_line_chart(scores, group_labels, title='Scores for each classifier', ba
 
     fig.tight_layout()
     plt.show()
+    
+def unzip_all_scores(scores_list):
+    """[summary]
+
+    :param scores_list: [description]
+    :type scores_list: [type]
+    :return: [description]
+    :rtype: [type]
+    """
+
+    train_scores = []
+    test_scores = []
+
+    # loops over pixels
+    for i in range(len(scores_list)):
+        train, test = unzip_scores(scores_list[i])
+        train_scores.append(train)
+        test_scores.append(test)
+    
+    return train_scores, test_scores
 
 

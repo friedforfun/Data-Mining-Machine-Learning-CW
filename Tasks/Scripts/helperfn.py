@@ -252,3 +252,45 @@ def update_progress(progress, message='Loading...'):
     print(message)
     text = "Progress: [{0}] {1:.1f}%".format("#" * block + "-" * (bar_length - block), progress * 100)
     print(text)
+    
+def get_labels():
+    """ List of all class labels
+
+    :return: list of class labels
+    :rtype: list
+    """
+    
+    labels = []
+    for i in range(-1, 10):
+        labels.append(get_results(i))
+    
+    return labels
+
+def grab_n_pixels(pixel_order, n):
+    """ List of n pixels
+
+    :param pixel_order: list of pixels
+    :type pixel_order: list
+    :param n: number of pixels to take
+    :type n: int
+    :return: list of n pixels
+    :rtype: list
+    """
+    output = []
+
+    for j in range(len(pixel_order)):
+        output.append(pixel_order[j][:n]) 
+
+    return output
+
+
+def data_lists():
+    """ List containing the data sets for each class
+
+    :return: list of data sets
+    :rtype: list
+    """
+    data = []
+    for i in range(-1, 10):
+        data.append(get_data(i))
+    return data

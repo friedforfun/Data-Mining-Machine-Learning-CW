@@ -5,6 +5,9 @@ from . import downsample as ds
 import matplotlib.pyplot as plt
 
 
+
+
+
 def bestPixels(label, n, downscale=False, downscale_shape=(2, 2)):
     """Fetch data and get n number of best pixels indexes from dataset label
 
@@ -161,6 +164,13 @@ def get_best_n_pixels_all_classes(data):
         max_value.append(np.argmax(data[i]))
     
     return np.array(max_value) +1 
+
+
+def get_top_pixels(n):
+    pixel_order = []
+    for i in range(-1, 10):
+        pixel_order.append(np.array(bestPixels(i, n)))
+    return pixel_order
     
 
 
