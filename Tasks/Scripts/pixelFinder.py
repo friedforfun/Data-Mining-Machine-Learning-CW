@@ -144,3 +144,27 @@ def best_pixels(X, y, n, downscale=False, downscale_shape=(2, 2)):
         result[index] = -9223372036854775806
 
     return res_arr
+
+def get_best_n_pixels_all_classes(data):
+    """[summary]
+
+    :param data: [description]
+    :type data: [type]
+    :return: [description]
+    :rtype: [type]
+    """
+    max_value = []
+
+    data = data.T
+
+    for i in range(data.shape[0]):
+        max_value.append(np.argmax(data[i]))
+    
+    return max_value
+
+
+
+
+
+
+
