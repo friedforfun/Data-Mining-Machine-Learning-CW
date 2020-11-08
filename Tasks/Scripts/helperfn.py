@@ -1,3 +1,6 @@
+import sys
+import time
+from IPython.display import clear_output
 import pandas
 import matplotlib.pyplot as plt
 import math
@@ -165,7 +168,7 @@ def balance_by_class(X, y, size=None, allow_imbalance=False, random_state=0):
     X_res = frame.drop('y', 1)
     return X_res, y_res
 
-def get_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
+def convert_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
     """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
 
     :param bin_names: list of bin names
@@ -188,7 +191,7 @@ def get_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 
 named_bins = ['black', 'very dark grey', 'dark grey', 'semi-dark grey', 'semi-light grey', 'light grey', 'very-light grey', 'white']
 numbered_bins = [0, 1, 2, 3, 4, 5, 6, 7]
 
-def mutate_to_ewb(data, bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
+def to_ewb(data, bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
     """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
 
     :param bin_names: list of bin names
@@ -202,8 +205,50 @@ def mutate_to_ewb(data, bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 6
         raise ValueError("Not enough or too many bin labels provided")
 
     df = data
-
+    progress = 0
+    total_colums = df.shape[1]
     for column in df:
+        update_progress(progress/total_colums, message='Equal Width Binning Data...')
         df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
+        progress += 1
 
     return df
+
+
+def data_lists():
+    """ Lists of the dataset and the result column
+
+    :return: a list containing 11 lists, each containing X and y data
+    :rtype: List
+    """
+    data = []
+    for i in range(-1, 10):
+        data.append(get_data(i))
+    return data
+
+
+def update_progress(progress, message='Loading...'):
+    """Show progress in loop
+
+    :param progress: percentage complete
+    :type progress: int/float
+    :param message: A message to display with the progress bar
+    :type message: str
+    """
+    bar_length = 20
+    if isinstance(progress, int):
+        progress = float(progress)
+    if not isinstance(progress, float):
+        progress = 0
+    if progress < 0:
+        progress = 0
+    if progress >= 1:
+        progress = 1
+
+
+    block = int(round(bar_length * progress))
+
+    clear_output(wait=True)
+    print(message)
+    text = "Progress: [{0}] {1:.1f}%".format("#" * block + "-" * (bar_length - block), progress * 100)
+    print(text)
