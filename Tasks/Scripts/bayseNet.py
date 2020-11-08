@@ -1,21 +1,80 @@
 from pgmpy.models import BayesianModel
 from pgmpy.estimators import BayesianEstimator, HillClimbSearch, ExhaustiveSearch, K2Score, MaximumLikelihoodEstimator, BicScore, BDeuScore
 from pgmpy.inference import VariableElimination
+from sklearn.model_selection import train_test_split
+from IPython.utils import io
 import numpy as np
 import pandas as pd
 import networkx as nx
 
-from Scripts import helperfn as hf
-from Scripts import pixelFinder as pf
+from . import pixelFinder as pf
+from . import helperfn as hf
+from . import downsample as ds
 
+
+def build_networks(best_pixel_labels, balance_by_class=False, ewb=True, downscale=False, result_label_set=(0, 11), **kwargs):
+    """Build the networks for all specified result label sets
+
+    :param best_pixel_labels: An object representing all the pixels to use as nodes in the bayse network
+    :type best_pixel_labels: List
+    :param balance_by_class: Balance the class distributions for each class, defaults to False
+    :type balance_by_class: bool, optional
+    :param ewb: Perform Equal width binning on the data, defaults to True
+    :type ewb: bool, optional
+    :param downscale: Downscale the data, defaults to False
+    :type downscale: bool, optional
+    :return: Tuple of model, scores, and data
+    :rtype: (list, list, list)
+    """
+    X, y = hf.get_data()
+
+    if downscale:
+        X = ds.downscale(X)
+
+    if ewb:
+        X = hf.to_ewb(X)
+
+    models_inference = []
+    scores = []
+    train_test_data = []
+
+    for i in range(result_label_set[0], result_label_set[1]):
+        hf.update_progress(i / result_label_set[1]-1,
+                           message='Building all networks...')
+        y = hf.get_results(result_id=i-1)
+        X_ = X
+        if balance_by_class:
+            X_, y = hf.balance_by_class(X, y)
+
+        X_ = np.take(X_, best_pixel_labels[i], axis=1)
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_, y, **kwargs)
+
+        X_ = X_train.join(y_train)
+
+        edge_estimator = estimate_model_edges(X_, **kwargs)
+        model = model_with_params(
+            X_, edge_estimator.edges, **kwargs)
+
+        infer = get_inference_model(model)
+
+        train_score = score_model(infer, X_train, y_train)
+        test_score = score_model(infer, X_test, y_test)
+        
+        models_inference.append([model, infer])
+        scores.append([train_score, test_score])
+        train_test_data.append([X_train, X_test,  y_train, y_test])
+
+    return models_inference, scores, train_test_data
 
 def get_naive_edges(pixels, label='y'):
-    """
+    """ Naively assume that the label attribute is the only dependancy
 
-    :param pixels: [description]
-    :type pixels: [type]
-    :return: [description]
-    :rtype: [type]
+    :param pixels: List of nodes
+    :type pixels: list(str)
+    :return: a list of tuples representing all the edges in the graph
+    :rtype: list(str, str)
     """
     edges = [(i, label) for i in list(map(str, pixels))]
     return edges
@@ -112,12 +171,12 @@ def score_model(model, test_data, labels, result_label='y'):
     false_negative = 0
 
     for i in range(test_data.shape[0]):
-        print('looping')
         ev = test_data.iloc[i].to_dict()
-
-        q = model.query(variables=[result_label], evidence=ev)
-        pred = np.argmax(q)
-
+        hf.update_progress(i / test_data.shape[0], message='Scoring model...')
+        with io.capture_output() as captured:
+            q = model.map_query(variables=[result_label], evidence=ev)
+        
+        pred = q.get(result_label)
         if labels.iloc[i].values[0] == 0 and pred == 0:
             true_positive += 1
         if labels.iloc[i].values[0] == 1 and pred == 1:
@@ -127,8 +186,8 @@ def score_model(model, test_data, labels, result_label='y'):
         if labels.iloc[i].values[0] == 1 and pred == 0:
             false_positive += 1
 
-    score = true_positive / test_data.shape[0]
+    score = (true_positive+true_negative) / test_data.shape[0]
     print()
     print()
     print('Score: ', score)
-    return (true_positive, true_negative, false_positive, false_negative)
+    return (true_positive, false_positive, false_negative, true_negative)

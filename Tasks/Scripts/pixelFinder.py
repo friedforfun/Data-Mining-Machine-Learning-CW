@@ -125,8 +125,8 @@ def best_pixels(X, y, n, downscale=False, downscale_shape=(2, 2)):
     :param downscale_shape: The degree of downscaling on each axis, defaults to (2,2)
     :type downscale_shape: tuple, optional
 
-    :return: Array of size n with idexes of n best pixels
-    :rtype: array
+    :return: List of size n with idexes of n best pixels
+    :rtype: List
     """
     if downscale:
         X = ds.downscale(X, downscale_shape=downscale_shape)
