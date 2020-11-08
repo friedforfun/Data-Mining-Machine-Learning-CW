@@ -22,7 +22,7 @@ def build_confusion_matrix(classifiers, data):
     return train_confusion, confusion
 
 
-def show_confusion_matrix(confusion, index_range=(0, 10), kappas=None):
+def show_confusion_matrix(confusion, index_range=(0, 11), kappas=None):
     """Diplay all confusion matrix within range
 
     :param confusion: the list of confusion matrices
@@ -51,14 +51,14 @@ def show_confusion_matrix(confusion, index_range=(0, 10), kappas=None):
             cmd = ConfusionMatrixDisplay(
                 confusion[i], display_labels=['True', 'False'])
             cmd.plot(ax=ax[i])
-            label = label_def.get(i, i)
+            label = label_def.get(i-1, i)
             if not kappas is None:
                 cmd.ax_.set_title(f'{label}\n Kappa: {kappa}', fontsize=20)  # type: ignore
             else:
                 cmd.ax_.set_title(f'{label}', fontsize=20)
 
     plt.subplots_adjust(wspace=0.40, hspace=0.1)
-    axes.flat[-1].set_visible(False)
+    #axes.flat[-1].set_visible(False)
     plt.show()
 
 
