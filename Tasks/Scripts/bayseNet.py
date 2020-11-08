@@ -2,6 +2,7 @@ from pgmpy.models import BayesianModel
 from pgmpy.estimators import BayesianEstimator, HillClimbSearch, ExhaustiveSearch, K2Score, MaximumLikelihoodEstimator, BicScore, BDeuScore
 from pgmpy.inference import VariableElimination
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 from IPython.utils import io
 import numpy as np
 import pandas as pd
@@ -170,6 +171,8 @@ def score_model(model, test_data, labels, result_label='y'):
     false_positive = 0
     false_negative = 0
 
+    predictions = []
+
     for i in range(test_data.shape[0]):
         ev = test_data.iloc[i].to_dict()
         hf.update_progress(i / test_data.shape[0], message='Scoring model...')
@@ -177,6 +180,8 @@ def score_model(model, test_data, labels, result_label='y'):
             q = model.map_query(variables=[result_label], evidence=ev)
         
         pred = q.get(result_label)
+        predictions.append(pred)
+
         if labels.iloc[i].values[0] == 0 and pred == 0:
             true_positive += 1
         if labels.iloc[i].values[0] == 1 and pred == 1:
@@ -190,4 +195,16 @@ def score_model(model, test_data, labels, result_label='y'):
     print()
     print()
     print('Score: ', score)
-    return (true_positive, false_positive, false_negative, true_negative)
+    return ((true_positive, false_positive, false_negative, true_negative), predictions)
+
+def bayse_net_confusion_matrices(scores, data):
+    conf_train = []
+    conf_test = []
+    for i in range(len(scores)):
+        train_pred = scores[i][0][1]
+        train_labels = data[i][2].to_numpy().flatten().tolist()
+        test_pred = scores[i][1][1]
+        test_labels = data[i][3].to_numpy().flatten().tolist()
+        conf_train.append(confusion_matrix(train_labels, train_pred))
+        conf_test.append(confusion_matrix(test_labels, test_pred))
+    return conf_train, conf_test

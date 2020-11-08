@@ -67,7 +67,7 @@ def build_nbc_models(downscale=False, downscale_shape=(2,2), ewb=False, **kwargs
     if downscale:
         training_smpl = ds.downscale(training_smpl, downscale_shape=downscale_shape)
     if ewb:
-        training_smpl = helperfn.mutate_to_ewb(pd.DataFrame(training_smpl))
+        training_smpl = helperfn.to_ewb(pd.DataFrame(training_smpl))
 
     train_test_data = []
     classifiers = []
