@@ -70,7 +70,8 @@ We used the pixel ordering data to build and score 2304 Naive Bayes classifiers 
 
 \section{Naive Bayesian Networks}\label{sec:NaiveBayse}
 We used the SKLearn library's Naive Bayes modules to build the Naive Bayes classifiers, we built 88 classifiers so we could compare and test the various pre-processing configurations we had developed. 
-First we plotted the accuracy of the different configurations in bar charts to provide a high-level perspective on the accuracy, and then we built confusion matrices gain detailed insight into how the classifier's performance varied.\\
+First we plotted the accuracy of the different configurations in bar charts to provide a high-level perspective on the accuracy, and then we built confusion matrices gain detailed insight into how the classifier's performance varied.
+\par
 \underline{Observations:}
 \begin{enumerate}
     \item Using no pre-processing technique with Naive Bayes had a significant negative impact on the quality of the predictions.
@@ -136,6 +137,25 @@ In conclusion from our observations in clustering we think that the better the f
 \addappheadtotoc
 \begin{appendices}
 \section{Appendix A}
+
+
+\subsection{Workload split}
+  \centering
+  \begin{table}[ht]
+    \centering
+    \begin{tabular}{|p{0.2\linewidth} | p{0.8\linewidth}|} 
+      \hline
+      \textbf{Team member}  & \textbf{Involvement} \\ \hline
+      Lewis Wilson & I contributed throughout the project helping with the individual script files and notebooks. I created the visualisations for task 5 showing how the numbers of pixel affected the accuracy of classification. I displayed this in two ways showing for all 2304 pixels a line chart of the accuracy for every amount. Then displaying the accuracy results in a bar chart for the best pixel amount per class compared to the recommended 5, 10, 20-pixel amounts. I helped put together the report and proofread it prior to submission. \\ \hline
+      Chun Man & Created visualisations for average greyscale values and report  \\ \hline
+      Sam Fay-Hunt & Wrote the naive bayse gaussian scripts, organised Task 3 notebook for submission, wrote the scripts to display the confusion matrices, built the bayse networks, wrote Task 7 notebook, wrote downsampling.py, many of the scripts to plot the bar charts, most of the clustering scripts, half of the clustering Notebooks for tasks 9 \& 11 (PCA and feature extraction), wrote a few assistance functions for Task 5, most of the doc strings, helped edit the report, and compiled Sphinx. \\ \hline
+      Kamil Szymczak & Contributed to the development of finding the most important pixels module and produced algorithms to generate heatmaps. Contributed to clustering as well as produced Bayesian Network Architectures in Weka and wrote a conversion script which produces weka file to only contain desired pixels. Contributed with report . \\ \hline
+    \end{tabular}
+
+    Overall, we 
+  \end{table}\label{ContributionTab}
+
+\newpage
 \subsection{Module Table}\label{tab:moduleTable}
 The following are located in the Scripts folder
 \begin{table}[ht]
@@ -149,7 +169,9 @@ The following are located in the Scripts folder
       bayseNet.py & Provides functions used for getting a score for a model by testing all test data against labels. \\ \hline
       confusionMatrix.py & Provides functions for building and displaying confusion matrices as well as methods for calculating kappa values. \\ \hline
       plotScripts.py & Provides functions for plotting data into graphs \\ \hline
-      wekaConversion.py & Provides functions to convert preprocessed data to be consumable by Weka\\ \hline
+      wekaConversion.py & Provides functions to convert preprocessed data to be consumable by Weka\\ \hline 
+      NaiveBayes/* & Contains modules for NB Gaussian and NB Categorical \\ 
+      \hline
       clustering.py & Provides functions for getting information for clusters\\
       \hline
     \end{tabular}
@@ -228,9 +250,9 @@ The following are located in the Scripts folder
 \end{figure}
 
 \newpage
-\subsection{Triangular and Circular sign clusters}\label{TrianCircCluster2} 
+\subsection{Clustering by shape}\label{ClusteringByShape} 
 \begin{figure}[h!]
-  \includegraphics[width=0.85\textwidth]{Images/TriangularCircularClusterBarChart2.png}
+  \includegraphics[width=0.85\textwidth]{images/_clustering_by_shape_allPixels.png}
 \end{figure}
 
 \newpage
@@ -240,48 +262,46 @@ The following are located in the Scripts folder
   \includegraphics[scale=0.4]{images/test_data_comparison_pixels.PNG}
 \end{figure}
 
-\newpage
+
 \subsection{Train data comparison with 500 pixels}\label{test_data_500_pixels}
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.4]{images/train_data_comparison_pixels.PNG}
 \end{figure}
 
-\newpage
-\subsection{Workload split}\label{12x12Scatter}
-\begin{figure}[h!]
-  \centering
-  \begin{table}[ht]
-    \centering
-    \begin{tabular}{|p{0.35\linewidth} | p{0.6\linewidth}|} 
-      \hline
-      \textbf{Team member}  & \textbf{Invovlement} \\ \hline
-      Lewis Wilson & What did lewis do? \\ \hline
-      Jimmy Man & What did jimmy do?  \\ \hline
-      Sam Fay-Hunt & What did sam do? \\ \hline
-      Kamil Szymczak & What did kamil do? \\ \hline
-      \hline
-    \end{tabular}
-\end{table}
-\end{figure}
 
 \newpage
 \subsection{Clustering Labels}\label{LabelClusters1} 
 \begin{figure}[h!]
+  \centering
   \includegraphics[width=0.8\textwidth]{Images/LabelClusters1.png}
 \end{figure}
 
 \newpage
 \subsection{Clustering Labels 250 best pixels}\label{LabelClusters2} 
 \begin{figure}[h!]
+  \centering
   \includegraphics[width=0.8\textwidth]{Images/LabelClusters2.png}
 \end{figure}
 
 \newpage
-\subsection{Networks by class}\label{ClassNetworks} 
+\subsection{5 Pixel Bayes Networks by class}\label{5PixelsNetworks} 
 \begin{figure}[h!]
+  \centering
   \includegraphics[width=0.85\textwidth]{Images/AllClasses.png}
 \end{figure}
 
+\subsection{K-means cluster with 10 clusters and 10 classes}\label{10pixelsNetwork} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/TenPixelsBNetwork.png}
+\end{figure}
+
+\newpage
+\subsection{K-means cluster with 10 clusters and 10 classes}\label{Kmeans10Clusters10Classes} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/Kmeans10Clusters10Classes.png}
+\end{figure}
 \end{appendices}
 \end{document}
