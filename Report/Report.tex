@@ -124,7 +124,7 @@ There wasn't a big improvement on the accuracy of confusion matrix between K2, T
 We used the principle component analysis module from SKLearn to help plot the data as a scatter graph, this made it very clear we had a problem with how our data was distributed for clustering see Appendix~\ref{app:BadClustering}, this resulted in apparently meaningless clusters.
 To resolve this we tried many permutations of selection techniques, discretizations, and transformations. 
 We considered that the data must be clustering on features that were otherwise transparent to us, as a result we tried looking for patterns in the clustering behaviour such as looking at how the clustering algorithm grouped data by high-level features such as the shape of the signs.
-We used KMeans clustering with the EM and Elkan algorithms...({\huge talk about this more})\\
+We used KMeans clustering with the EM and Elkan algorithms to compare the resulting clusters, however they were mostly identical Elkan converged considerably faster then EM.\\
 Because we observed an issue with the desired class features not usefully dividing the data within the clustering dimensions we decided to use transfer learning to try and extract more useful feature vectors.
 We used Keras to download VGG16 with weights trained on imagenet, by removing the (top) fully connected layers past the convolutional and pooling layers we were able to produce feature vectors for each image. Using these feature vectors with principle component analysis we were finally able to produce some clearly divided clusters for the binary classification labels. 
 We also noted that this resulted in clusters that were split by the shape of the signs (triangle or square).   
@@ -133,10 +133,10 @@ We also noted that this resulted in clusters that were split by the shape of the
 \par
 (Figure ~\ref{TrianCircCluster1}) We clustered the data into 2 clusters with the hope that it would differentiate the sign's shape, one cluster for triangular the other for rectangular signs. 
 One cluster got more images of a particular shape than the other but the difference was very small.
-(Figure ~\ref{TrianCircCluster2}) When clustering them again but now with each image only containing the 250 best pixels, the clusters did a better job as they contained a lot more signs of one shape than the other. Thus we reaffirmed our knowledge from the task 4 heatmap stating that apart from digits on signs the shape is the second most important feature. 
+We performed clustering again using our best pixel selection algorithm (Figure~\ref{ClusteringByShape}) but now with each image only containing the 250 best pixels, the clusters did a better job as they contained a lot more signs of one shape than the other. Thus we reaffirmed our knowledge from the task 4 heatmap stating that apart from digits on signs the shape is the second most important feature. 
 \par
-From our cluster graphs (Figure~\ref{LabelClusters1} \& Figure~\ref{LabelClusters2}) helped to visualize the connection between signs and clusters for the binary outcome datasets. We observed that for example the right turn sign is indeed only in one cluster thus has 100\% accuracy whereas all the other signs are scattered in both clusters. 
-In conclusion from our observations in clustering we think that the better the feature extraction is the better results clustering will provide. \\
+From our cluster graphs (Figure~\ref{LabelClusters1} \& Figure~\ref{LabelClusters2}) helped to visualize the connection between signs and clusters for the binary outcome datasets. We observed that triangular signs were indeed only in one cluster thus has 100\% accuracy whereas the circular signs were distributed in both clusters, so we had high recall for triangular sign. 
+In conclusion we observed that more intelligent feature extraction results in better clustering. \\
 {\huge Figures needed (see task 9)}
 
 \pagebreak
