@@ -105,7 +105,7 @@ def run_classifier(x_data, y, pixel_order, n_pixels=5, verbose=False, **kwargs):
 
     # No 0 pixels so start at 1 
     for i in range(1, n_pixels + 1):
-        helperfn.update_progress(i/(n_pixels+1), message='running all classifiers, could be slow')
+        helperfn.update_progress(i/(n_pixels), message='running all classifiers, could be slow')
         pixels = helperfn.grab_n_pixels(pixel_order, i)
         #print(len(pixels))
         if not verbose:
