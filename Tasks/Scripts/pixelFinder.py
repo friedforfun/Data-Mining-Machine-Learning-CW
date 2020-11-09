@@ -146,7 +146,7 @@ def best_pixels(X, y, n, downscale=False, downscale_shape=(2, 2)):
     return res_arr
 
 def get_best_n_pixels_all_classes(data):
-    """[summary]
+    """Here is a doc string :) 
 
     :param data: [description]
     :type data: [type]
@@ -160,7 +160,8 @@ def get_best_n_pixels_all_classes(data):
     for i in range(data.shape[0]):
         max_value.append(np.argmax(data[i]))
     
-    return max_value
+    return np.array(max_value) +1 
+    
 
 
 
