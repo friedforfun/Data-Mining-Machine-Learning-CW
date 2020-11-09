@@ -11,12 +11,15 @@
 \usepackage{appendix}
 \usepackage{xcolor}
 \usepackage{subfig}
+\usepackage{bookmark}
+\usepackage{array}
+\usepackage{multirow}
 
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0pt}
 
 \title{Data Mining \& ML}
-\author{ Group 4 }
+\author{Group 4\\Lewis Wilson, Sam Fay-Hunt, Kamil Szymczak, Chun Man }
 \date{November 2020}
 
 \begin{document}
@@ -45,7 +48,7 @@ We used Jupyter notebooks for all the tasks, primarily as a testing workspace an
 \textbf{\underline{Downsampling}}\\
 We used local-mean downscaling (\emph{Scripts/downsampling.py}) to try and expose low-level features
 (Appendix~\ref{fig:downsampleExample}). We frequently used downscaling throughout the project to reduce the image resolution by averaging 4 pixels into 1. 
-We also used rescaling with aliasing to reduce the image to 12x12 pixels, to aid in visualising patterns in the pixel greyscale values (Appendix~\ref{12x12Scatter}~\&~\ref{AvColDSvAvRowDS}).
+We also used rescaling with aliasing to reduce the image to 12x12 pixels, to aid in visualising patterns in the pixel greyscale values (Appendix~\ref{AvColDSvAvRowDS}~\&~\ref{12x12Scatter}).
 \par
 
 \textbf{\underline{Binning}}\\
@@ -67,7 +70,8 @@ We used the pixel ordering data to build and score 2304 Naive Bayes classifiers 
 
 \section{Naive Bayesian Networks}\label{sec:NaiveBayse}
 We used the SKLearn library's Naive Bayes modules to build the Naive Bayes classifiers, we built 88 classifiers so we could compare and test the various pre-processing configurations we had developed. 
-First we plotted the accuracy of the different configurations in bar charts to provide a high-level perspective on the accuracy, and then we built confusion matrices gain detailed insight into how the classifier's performance varied.\\
+First we plotted the accuracy of the different configurations in bar charts to provide a high-level perspective on the accuracy, and then we built confusion matrices gain detailed insight into how the classifier's performance varied.
+\par
 \underline{Observations:}
 \begin{enumerate}
     \item Using no pre-processing technique with Naive Bayes had a significant negative impact on the quality of the predictions.
@@ -79,15 +83,11 @@ First we plotted the accuracy of the different configurations in bar charts to p
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{Images/NaiveBayesEWBMatrices.png}
+  \includegraphics[width=0.9\textwidth]{Images/NaiveBayesEWBMatrices.png}
   \caption{Naive Bayes confusion matrix showing Equal Width Binning}
   \label{fig:NaiveBayesEWBConfMat}
 \end{figure}
-{\color{red}{\large IMAGE NEEDS RESIZING TO READ TEXT (Sam: maybe reduce it to 3 columns instead of 4?)}}
-\\
-
 \section{Complex Bayes nets}
-
 \subsection{Building Bayes Networks}
 Bayes networks represent probabilistic directed acyclic graphs that define the relationships between conditional dependencies and random variables.
 A naive Bayesian network can be represented in a Bayes network where the node representing the probability distribution of the class is the only parent of all other nodes and no other edges exist in the network. 
@@ -109,7 +109,6 @@ When using Weka to compute Bayesian networks we observed that Weka would perform
 
 \subsection{Experimental Results}
 
-
 \pagebreak
 
 \section{Clustering}
@@ -122,7 +121,15 @@ Because we observed an issue with the desired class features not usefully dividi
 We used Keras to download VGG16 with weights trained on imagenet, by removing the (top) fully connected layers past the convolutional and pooling layers we were able to produce feature vectors for each image. Using these feature vectors with principle component analysis we were finally able to produce some clearly divided clusters for the binary classification labels. 
 We also noted that this resulted in clusters that were split by the shape of the signs (triangle or square).   
 
-\huge Figures needed (see task 9)
+\underline{Clustering by sign shape}
+\par
+(Figure ~\ref{TrianCircCluster1}) We clustered the data into 2 clusters with the hope that it would differentiate the sign's shape, one cluster for triangular the other for rectangular signs. 
+One cluster got more images of a particular shape than the other but the difference was very small.
+(Figure ~\ref{TrianCircCluster2}) When clustering them again but now with each image only containing the 250 best pixels, the clusters did a better job as they contained a lot more signs of one shape than the other. Thus we reaffirmed our knowledge from the task 4 heatmap stating that apart from digits on signs the shape is the second most important feature. 
+\par
+From our cluster graphs (Figure~\ref{LabelClusters1} \& Figure~\ref{LabelClusters2}) helped to visualize the connection between signs and clusters for the binary outcome datasets. We observed that for example the right turn sign is indeed only in one cluster thus has 100\% accuracy whereas all the other signs are scattered in both clusters. 
+In conclusion from our observations in clustering we think that the better the feature extraction is the better results clustering will provide. \\
+{\huge Figures needed (see task 9)}
 
 \pagebreak
 \appendix
@@ -130,6 +137,25 @@ We also noted that this resulted in clusters that were split by the shape of the
 \addappheadtotoc
 \begin{appendices}
 \section{Appendix A}
+
+
+\subsection{Workload split}
+  \centering
+  \begin{table}[ht]
+    \centering
+    \begin{tabular}{|p{0.2\linewidth} | p{0.8\linewidth}|} 
+      \hline
+      \textbf{Team member}  & \textbf{Involvement} \\ \hline
+      Lewis Wilson & I contributed throughout the project helping with the individual script files and notebooks. I created the visualisations for task 5 showing how the numbers of pixel affected the accuracy of classification. I displayed this in two ways showing for all 2304 pixels a line chart of the accuracy for every amount. Then displaying the accuracy results in a bar chart for the best pixel amount per class compared to the recommended 5, 10, 20-pixel amounts. I helped put together the report and proofread it prior to submission. \\ \hline
+      Chun Man & Created visualisations for average greyscale values and report  \\ \hline
+      Sam Fay-Hunt & Wrote the naive bayse gaussian scripts, organised Task 3 notebook for submission, wrote the scripts to display the confusion matrices, built the bayse networks, wrote Task 7 notebook, wrote downsampling.py, many of the scripts to plot the bar charts, most of the clustering scripts, half of the clustering Notebooks for tasks 9 \& 11 (PCA and feature extraction), wrote a few assistance functions for Task 5, most of the doc strings, helped edit the report, and compiled Sphinx. \\ \hline
+      Kamil Szymczak & Contributed to the development of finding the most important pixels module and produced algorithms to generate heatmaps. Contributed to clustering as well as produced Bayesian Network Architectures in Weka and wrote a conversion script which produces weka file to only contain desired pixels. Contributed with report . \\ \hline
+    \end{tabular}
+
+    Overall, we 
+  \end{table}\label{ContributionTab}
+
+\newpage
 \subsection{Module Table}\label{tab:moduleTable}
 The following are located in the Scripts folder
 \begin{table}[ht]
@@ -143,7 +169,10 @@ The following are located in the Scripts folder
       bayseNet.py & Provides functions used for getting a score for a model by testing all test data against labels. \\ \hline
       confusionMatrix.py & Provides functions for building and displaying confusion matrices as well as methods for calculating kappa values. \\ \hline
       plotScripts.py & Provides functions for plotting data into graphs \\ \hline
-      wekaConversion.py & Provides functions to convert preprocessed data to be consumable by Weka\\
+      wekaConversion.py & Provides functions to convert preprocessed data to be consumable by Weka\\ \hline 
+      NaiveBayes/* & Contains modules for NB Gaussian and NB Categorical \\ 
+      \hline
+      clustering.py & Provides functions for getting information for clusters\\
       \hline
     \end{tabular}
 \end{table}
@@ -152,16 +181,20 @@ The following are located in the Scripts folder
 \subsection{Downsampling example}\label{fig:downsampleExample}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Images/downsample_example.png}
+    \includegraphics[width=0.9\textwidth]{Images/downsample_example.png}
 \end{figure}
 
 \newpage
 \subsection{Heatmaps}\label{Heatmaps}
 \begin{figure}[h!]
   \centering
-  \subfloat[20mph \& 60mph]{\includegraphics[width=0.4\textwidth]{Images/heatmap.png}}
-  \hfill
-  \subfloat[50mph \& 60mph]{\includegraphics[width=0.4\textwidth]{Images/heatmap2.PNG}}
+  \begin{tabular}{ccc}
+    \subfloat[20 mph \& 30 mph]{\includegraphics[width=0.3\textwidth]{images/heatmap.PNG}} &
+    \subfloat[50 mph \& 60 mph]{\includegraphics[width=0.3\textwidth]{images/heatmap2.PNG}} &
+    \subfloat[70 mph \& left turn]{\includegraphics[width=0.3\textwidth]{images/heatmap3.PNG}} \\
+    \subfloat[right turn \& beware pedestrian crossing]{\includegraphics[width=0.3\textwidth]{images/heatmap4.PNG}} &
+    \subfloat[beware children \& beware cycle route ahead]{\includegraphics[width=0.3\textwidth]{images/heatmap5.PNG}} 
+  \end{tabular}
 \end{figure}
 
 \newpage
@@ -175,25 +208,25 @@ The following are located in the Scripts folder
 \subsection{Accuracy of Equal Width Binning on Train data}\label{BarChartEWBTrain}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.6]{Images/BarChartEWBTrain.PNG}
+  \includegraphics[width=1\textwidth]{Images/BarChartEWBTrain.PNG}
 \end{figure}
 
 \subsection{Accuracy of Equal Width Binning on Test data}\label{BarChartEWBTest}
   \begin{figure}[h!] 
     \centering
-    \includegraphics[scale=0.6]{Images/BarChartEWBTest.PNG}
+    \includegraphics[scale=0.6]{images/BarChartEWBTest.PNG}
 \end{figure}
 
 \newpage
 \subsection{Training confusion matrices for Naive Bayes}\label{NaiveBayesConfMatTraining}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.5]{Images/NaiveBayesConfMatTraining.PNG}
+  \includegraphics[width=1\textwidth]{Images/NaiveBayesConfMatTraining.PNG}
 \end{figure}
 
 \newpage
 \subsection{No clusters of classes}\label{app:BadClustering}
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.95\textwidth]{Images/BadClustering.png}
 \end{figure}
@@ -202,17 +235,73 @@ The following are located in the Scripts folder
 \subsection{Averaged by Column Downsampled vs Average by Row Downsampled}\label{AvColDSvAvRowDS}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.3]{Images/AvColDS vs AvRowDS.png}
+  \includegraphics[width=0.95\textwidth]{Images/AvColDS vs AvRowDS.png}
+\end{figure}
+
+\subsection{12x12 Downsampled image}\label{12x12Scatter} 
+\begin{figure}[h!]
+  \includegraphics[width=0.85\textwidth]{Images/12x12 Scatter.png}
 \end{figure}
 
 \newpage
-\subsection{12x12 Downsampled image}\label{12x12Scatter}
+\subsection{Triangular and Circular sign clusters}\label{TrianCircCluster1} 
 \begin{figure}[h!]
-  \centering
-  \includegraphics[scale=0.4]{Images/12x12 Scatter.png}
+  \includegraphics[width=0.85\textwidth]{Images/TriangularCircularClusterBarChart.png}
 \end{figure}
 
-% APPENDICES TO ADD
-% BAR CHART OF PIXEL COMPARISON FROM TASK 5
+\newpage
+\subsection{Clustering by shape}\label{ClusteringByShape} 
+\begin{figure}[h!]
+  \includegraphics[width=0.85\textwidth]{images/_clustering_by_shape_allPixels.png}
+\end{figure}
+
+\newpage
+\subsection{Test data comparison with 500 pixels}\label{500pixelsTestdata}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.4]{images/test_data_comparison_pixels.PNG}
+\end{figure}
+
+
+\subsection{Train data comparison with 500 pixels}\label{test_data_500_pixels}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.4]{images/train_data_comparison_pixels.PNG}
+\end{figure}
+
+
+\newpage
+\subsection{Clustering Labels}\label{LabelClusters1} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/LabelClusters1.png}
+\end{figure}
+
+\newpage
+\subsection{Clustering Labels 250 best pixels}\label{LabelClusters2} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/LabelClusters2.png}
+\end{figure}
+
+\newpage
+\subsection{5 Pixel Bayes Networks by class}\label{5PixelsNetworks} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{Images/AllClasses.png}
+\end{figure}
+
+\subsection{K-means cluster with 10 clusters and 10 classes}\label{10pixelsNetwork} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/TenPixelsBNetwork.png}
+\end{figure}
+
+\newpage
+\subsection{K-means cluster with 10 clusters and 10 classes}\label{Kmeans10Clusters10Classes} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/Kmeans10Clusters10Classes.png}
+\end{figure}
 \end{appendices}
 \end{document}

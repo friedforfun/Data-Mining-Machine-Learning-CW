@@ -1,9 +1,4 @@
-import sys
-import time
-from IPython.display import clear_output
 import pandas
-import matplotlib.pyplot as plt
-import math
 import numpy as np
 import os.path
 
@@ -117,7 +112,7 @@ def append_result_col(data, result):
     result.columns = ['y']
     return data.join(result)
 
-
+# Task 1 naive
 def randomize_data(dataframe):
     """dumb randomize, no discretization
 
@@ -126,8 +121,8 @@ def randomize_data(dataframe):
     """
     return dataframe.sample(frac=1)
 
-
-def balance_by_class(X, y, size=None, allow_imbalance=False, random_state=0):
+# Task 1
+def balance_by_class(X, y, size=None, allow_imbalance=False):
     """Select a sample of the data with a balanced class distribution
 
     :param X: data
@@ -141,17 +136,13 @@ def balance_by_class(X, y, size=None, allow_imbalance=False, random_state=0):
     :return: the sample and labels
     :rtype: tuple(pandas.df, pandas.df)
     """
-    # combine data labels
     data = append_result_col(X, y)
-
-    # get unique classes
     classes = np.unique(y)
-
     datasets = []
     smallest_size = data.shape[0]
     for i in range(len(classes)):
         temp_sample = data[data['y'] == classes[i]]
-        datasets += [temp_sample.sample(frac=1, random_state=random_state)]
+        datasets += [temp_sample.sample(frac=1)]
         if temp_sample.shape[0] < smallest_size:
             smallest_size = temp_sample.shape[0]
     frame = pandas.DataFrame(columns=data.columns)
@@ -159,7 +150,7 @@ def balance_by_class(X, y, size=None, allow_imbalance=False, random_state=0):
         for df in datasets:
             frame = frame.append(df.head(smallest_size))
     else:
-        if not allow_imbalance and size > smallest_size:
+        if allow_imbalance and size > smallest_size:
             raise ValueError(
                 "Size argument is too large for a balanced dataset")
         for df in datasets:
@@ -167,88 +158,3 @@ def balance_by_class(X, y, size=None, allow_imbalance=False, random_state=0):
     y_res = frame[['y']]
     X_res = frame.drop('y', 1)
     return X_res, y_res
-
-def convert_ewb_data(bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
-    """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
-
-    :param bin_names: list of bin names
-    :type bin_names: list
-    :param bin_ranges: list of bin ranges
-    :type bin_ranges: list
-    :return: the sample and labels
-    :rtype: pandas.df)
-    """
-    if len(bin_names)+1 != len(bin_ranges):
-        raise ValueError("Not enough or too many bin labels provided")
-
-    df = get_data_noresults()
-
-    for column in df:
-        df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
-
-    return df
-
-named_bins = ['black', 'very dark grey', 'dark grey', 'semi-dark grey', 'semi-light grey', 'light grey', 'very-light grey', 'white']
-numbered_bins = [0, 1, 2, 3, 4, 5, 6, 7]
-
-def to_ewb(data, bin_names=[0, 1, 2, 3, 4, 5, 6, 7], bin_ranges=[0, 31, 63, 95, 127, 159, 191, 223, 255]):
-    """Returns a pandas dataframe with equal width binning of defined bin ranges and bin names
-
-    :param bin_names: list of bin names
-    :type bin_names: list
-    :param bin_ranges: list of bin ranges
-    :type bin_ranges: list
-    :return: the sample and labels
-    :rtype: pandas.df
-    """
-    if len(bin_names)+1 != len(bin_ranges):
-        raise ValueError("Not enough or too many bin labels provided")
-
-    df = data
-    progress = 0
-    total_colums = df.shape[1]
-    for column in df:
-        update_progress(progress/total_colums, message='Equal Width Binning Data...')
-        df[column] = pandas.cut(df[column], bin_ranges, labels=bin_names)
-        progress += 1
-
-    return df
-
-
-def data_lists():
-    """ Lists of the dataset and the result column
-
-    :return: a list containing 11 lists, each containing X and y data
-    :rtype: List
-    """
-    data = []
-    for i in range(-1, 10):
-        data.append(get_data(i))
-    return data
-
-
-def update_progress(progress, message='Loading...'):
-    """Show progress in loop
-
-    :param progress: percentage complete
-    :type progress: int/float
-    :param message: A message to display with the progress bar
-    :type message: str
-    """
-    bar_length = 20
-    if isinstance(progress, int):
-        progress = float(progress)
-    if not isinstance(progress, float):
-        progress = 0
-    if progress < 0:
-        progress = 0
-    if progress >= 1:
-        progress = 1
-
-
-    block = int(round(bar_length * progress))
-
-    clear_output(wait=True)
-    print(message)
-    text = "Progress: [{0}] {1:.1f}%".format("#" * block + "-" * (bar_length - block), progress * 100)
-    print(text)

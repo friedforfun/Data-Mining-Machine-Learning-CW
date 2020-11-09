@@ -22,7 +22,7 @@ copyright = '2020, Sam Fay-Hunt, Lewis Wilson, Kamil Szymczak, Jimmy Man'
 author = 'Sam Fay-Hunt, Lewis Wilson, Kamil Szymczak, Jimmy Man'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0'
+release = '0.3'
 
 
 # -- General configuration ---------------------------------------------------
