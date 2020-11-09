@@ -11,6 +11,9 @@
 \usepackage{appendix}
 \usepackage{xcolor}
 \usepackage{subfig}
+\usepackage{bookmark}
+\usepackage{array}
+\usepackage{multirow}
 
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0pt}
@@ -79,15 +82,11 @@ First we plotted the accuracy of the different configurations in bar charts to p
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{Images/NaiveBayesEWBMatrices.png}
+  \includegraphics[width=0.9\textwidth]{Images/NaiveBayesEWBMatrices.png}
   \caption{Naive Bayes confusion matrix showing Equal Width Binning}
   \label{fig:NaiveBayesEWBConfMat}
 \end{figure}
-{\color{red}{\large IMAGE NEEDS RESIZING TO READ TEXT (Sam: maybe reduce it to 3 columns instead of 4?)}}
-\\
-
 \section{Complex Bayes nets}
-
 \subsection{Building Bayes Networks}
 Bayes networks represent probabilistic directed acyclic graphs that define the relationships between conditional dependencies and random variables.
 A naive Bayesian network can be represented in a Bayes network where the node representing the probability distribution of the class is the only parent of all other nodes and no other edges exist in the network. 
@@ -122,6 +121,11 @@ Because we observed an issue with the desired class features not usefully dividi
 We used Keras to download VGG16 with weights trained on imagenet, by removing the (top) fully connected layers past the convolutional and pooling layers we were able to produce feature vectors for each image. Using these feature vectors with principle component analysis we were finally able to produce some clearly divided clusters for the binary classification labels. 
 We also noted that this resulted in clusters that were split by the shape of the signs (triangle or square).   
 
+\underline{Clustering by sign shape}
+\par
+We clustered the data into 2 clusters with the hope that it would differentiate the sign's shape, one cluster for triangular the other for rectangular signs. One cluster got more images of a particular shape than the other but the difference was very small. 
+When clustering them again but now with each image only containing the 250 best pixels, the clusters did a better job as they contained a lot more signs of one shape than the other. Thus we reaffirmed our knowledge from the task 4 heatmap stating that apart from digits on signs the shape is the second most important feature. 
+
 \huge Figures needed (see task 9)
 
 \pagebreak
@@ -152,16 +156,20 @@ The following are located in the Scripts folder
 \subsection{Downsampling example}\label{fig:downsampleExample}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Images/downsample_example.png}
+    \includegraphics[width=0.9\textwidth]{Images/downsample_example.png}
 \end{figure}
 
 \newpage
 \subsection{Heatmaps}\label{Heatmaps}
 \begin{figure}[h!]
   \centering
-  \subfloat[20mph \& 60mph]{\includegraphics[width=0.4\textwidth]{Images/heatmap.png}}
-  \hfill
-  \subfloat[50mph \& 60mph]{\includegraphics[width=0.4\textwidth]{Images/heatmap2.PNG}}
+  \begin{tabular}{ccc}
+    \subfloat[20 mph \& 30 mph]{\includegraphics[width=0.3\textwidth]{images/heatmap.PNG}} &
+    \subfloat[50 mph \& 60 mph]{\includegraphics[width=0.3\textwidth]{images/heatmap2.PNG}} &
+    \subfloat[70 mph \& left turn]{\includegraphics[width=0.3\textwidth]{images/heatmap3.PNG}} \\
+    \subfloat[right turn \& beware pedestrian crossing]{\includegraphics[width=0.3\textwidth]{images/heatmap4.PNG}} &
+    \subfloat[beware children \& beware cycle route ahead]{\includegraphics[width=0.3\textwidth]{images/heatmap5.PNG}} 
+  \end{tabular}
 \end{figure}
 
 \newpage
@@ -175,7 +183,7 @@ The following are located in the Scripts folder
 \subsection{Accuracy of Equal Width Binning on Train data}\label{BarChartEWBTrain}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.6]{Images/BarChartEWBTrain.PNG}
+  \includegraphics[width=1\textwidth]{Images/BarChartEWBTrain.PNG}
 \end{figure}
 
 \subsection{Accuracy of Equal Width Binning on Test data}\label{BarChartEWBTest}
@@ -188,12 +196,12 @@ The following are located in the Scripts folder
 \subsection{Training confusion matrices for Naive Bayes}\label{NaiveBayesConfMatTraining}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.5]{Images/NaiveBayesConfMatTraining.PNG}
+  \includegraphics[width=1\textwidth]{Images/NaiveBayesConfMatTraining.PNG}
 \end{figure}
 
 \newpage
 \subsection{No clusters of classes}\label{app:BadClustering}
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.95\textwidth]{Images/BadClustering.png}
 \end{figure}
@@ -202,14 +210,12 @@ The following are located in the Scripts folder
 \subsection{Averaged by Column Downsampled vs Average by Row Downsampled}\label{AvColDSvAvRowDS}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.3]{Images/AvColDS vs AvRowDS.png}
+  \includegraphics[width=0.95\textwidth]{Images/AvColDS vs AvRowDS.png}
 \end{figure}
 
-\newpage
-\subsection{12x12 Downsampled image}\label{12x12Scatter}
+\subsection{12x12 Downsampled image}\label{12x12Scatter} 
 \begin{figure}[h!]
-  \centering
-  \includegraphics[scale=0.4]{Images/12x12 Scatter.png}
+  \includegraphics[width=0.85\textwidth]{Images/12x12 Scatter.png}
 \end{figure}
 
 % APPENDICES TO ADD
