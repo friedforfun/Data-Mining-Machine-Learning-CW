@@ -48,7 +48,7 @@ We used Jupyter notebooks for all the tasks, primarily as a testing workspace an
 \textbf{\underline{Downsampling}}\\
 We used local-mean downscaling (\emph{Scripts/downsampling.py}) to try and expose low-level features
 (Appendix~\ref{fig:downsampleExample}). We frequently used downscaling throughout the project to reduce the image resolution by averaging 4 pixels into 1. 
-We also used rescaling with aliasing to reduce the image to 12x12 pixels, to aid in visualising patterns in the pixel greyscale values (Appendix~\ref{12x12Scatter}~\&~\ref{AvColDSvAvRowDS}).
+We also used rescaling with aliasing to reduce the image to 12x12 pixels, to aid in visualising patterns in the pixel greyscale values (Appendix~\ref{AvColDSvAvRowDS}~\&~\ref{12x12Scatter}).
 \par
 
 \textbf{\underline{Binning}}\\
@@ -122,10 +122,13 @@ We also noted that this resulted in clusters that were split by the shape of the
 
 \underline{Clustering by sign shape}
 \par
-(Figure ~\ref{TrianCircCluster1}) We clustered the data into 2 clusters with the hope that it would differentiate the sign's shape, one cluster for triangular the other for rectangular signs. One cluster got more images of a particular shape than the other but the difference was very small. 
+(Figure ~\ref{TrianCircCluster1}) We clustered the data into 2 clusters with the hope that it would differentiate the sign's shape, one cluster for triangular the other for rectangular signs. 
+One cluster got more images of a particular shape than the other but the difference was very small.
 (Figure ~\ref{TrianCircCluster2}) When clustering them again but now with each image only containing the 250 best pixels, the clusters did a better job as they contained a lot more signs of one shape than the other. Thus we reaffirmed our knowledge from the task 4 heatmap stating that apart from digits on signs the shape is the second most important feature. 
-
-\huge Figures needed (see task 9)
+\par
+From our cluster graphs (Figure~\ref{LabelClusters1} \& Figure~\ref{LabelClusters2}) helped to visualize the connection between signs and clusters for the binary outcome datasets. We observed that for example the right turn sign is indeed only in one cluster thus has 100\% accuracy whereas all the other signs are scattered in both clusters. 
+In conclusion from our observations in clustering we think that the better the feature extraction is the better results clustering will provide. \\
+{\huge Figures needed (see task 9)}
 
 \pagebreak
 \appendix
