@@ -6,6 +6,9 @@
 Welcome to Data Mining & Machine Learning Coursework's documentation!
 =====================================================================
 
+.. automodule:: Scripts.clustering
+    :members:
+
 .. automodule:: Scripts.wekaConversion
     :members:
 
