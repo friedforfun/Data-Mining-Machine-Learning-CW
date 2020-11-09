@@ -18,7 +18,8 @@
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0pt}
 
-\title{Data Mining \& ML}
+\title{{\huge Data Mining \& Machine Learning F20DL} \\ {\small{\url{https://github.com/friedforfun/Data-Mining-Machine-Learning-CW}}}}
+
 \author{Group 4\\Lewis Wilson, Sam Fay-Hunt, Kamil Szymczak, Chun Man }
 \date{November 2020}
 
@@ -105,6 +106,13 @@ We handled the first problem by discretizing the greyscale values using equal-wi
 When using Weka to compute Bayesian networks we observed that Weka would perform extremely aggressive binning of the greyscale values often discretizing down to only 2 bins. This had a profound effect on the speed of learning the parameters and edges.
 
 \subsection{Algorithms \& Data}
+We have noticed that useADTree parameter doesn't make a difference therefore we set it to True for all the experiments done in Weka. 
+
+Initializing as Naive Bayes gives the same accuracy and confusion matrix but as shown in the graph (Appendix ~\ref{image71} \& Appendix ~\ref{image711}) all pixels depend on the Label whereas with NB set to False, some pixels are not dependent and not connected as well as pixels are dependent on other pixels.
+
+In the confusion matrix (Appendix Probability Contribution Table ~\ref{image74}) we can see pixel 1409 depends on the label, pixel 1362 and pixel 982. Due to using binning, Weka binned them into 2 binns one contains pixels between white and light grey and other bin has everything between grey and all the way to black. By knowing this bin distribution we can understand what impact combination of colors has on the outcome.
+
+There wasn't a big improvement on the accuracy of confusion matrix between K2, TAN and Hill Climbing.But from insights into the tree visualizations the max number of parents set to 3 is better than 1 as more pixels depend on other pixels which are needed to register features correctly.
 
 
 \subsection{Experimental Results}
@@ -140,20 +148,20 @@ In conclusion we observed that more intelligent feature extraction results in be
 
 
 \subsection{Workload split}
-  \centering
+  
   \begin{table}[ht]
     \centering
     \begin{tabular}{|p{0.2\linewidth} | p{0.8\linewidth}|} 
       \hline
       \textbf{Team member}  & \textbf{Involvement} \\ \hline
       Lewis Wilson & I contributed throughout the project helping with the individual script files and notebooks. I created the visualisations for task 5 showing how the numbers of pixel affected the accuracy of classification. I displayed this in two ways showing for all 2304 pixels a line chart of the accuracy for every amount. Then displaying the accuracy results in a bar chart for the best pixel amount per class compared to the recommended 5, 10, 20-pixel amounts. I helped put together the report and proofread it prior to submission. \\ \hline
-      Chun Man & Created visualisations for average greyscale values and report  \\ \hline
+      Chun Man & Created visualisations for average greyscale values for finding out about locality and correlations between pixels, contributed to the report.  \\ \hline
       Sam Fay-Hunt & Wrote the naive bayse gaussian scripts, organised Task 3 notebook for submission, wrote the scripts to display the confusion matrices, built the bayse networks, wrote Task 7 notebook, wrote downsampling.py, many of the scripts to plot the bar charts, most of the clustering scripts, half of the clustering Notebooks for tasks 9 \& 11 (PCA and feature extraction), wrote a few assistance functions for Task 5, most of the doc strings, helped edit the report, and compiled Sphinx. \\ \hline
       Kamil Szymczak & Contributed to the development of finding the most important pixels module and produced algorithms to generate heatmaps. Contributed to clustering as well as produced Bayesian Network Architectures in Weka and wrote a conversion script which produces weka file to only contain desired pixels. Contributed with report . \\ \hline
     \end{tabular}
-
-    Overall, we 
   \end{table}\label{ContributionTab}
+
+As a team we are happy with everyone's contributions to the project. All team members were punctional and showed up to all scheduled meetings. Sam took the lead as project manager throughout the project delgating the workload and providing support to others.
 
 \newpage
 \subsection{Module Table}\label{tab:moduleTable}
@@ -176,7 +184,7 @@ The following are located in the Scripts folder
       \hline
     \end{tabular}
 \end{table}
-% Appendix A.1
+
 
 \subsection{Downsampling example}\label{fig:downsampleExample}
 \begin{figure}[H]
@@ -191,9 +199,9 @@ The following are located in the Scripts folder
   \begin{tabular}{ccc}
     \subfloat[20 mph \& 30 mph]{\includegraphics[width=0.3\textwidth]{images/heatmap.PNG}} &
     \subfloat[50 mph \& 60 mph]{\includegraphics[width=0.3\textwidth]{images/heatmap2.PNG}} &
-    \subfloat[70 mph \& left turn]{\includegraphics[width=0.3\textwidth]{images/heatmap3.PNG}} \\
-    \subfloat[right turn \& beware pedestrian crossing]{\includegraphics[width=0.3\textwidth]{images/heatmap4.PNG}} &
-    \subfloat[beware children \& beware cycle route ahead]{\includegraphics[width=0.3\textwidth]{images/heatmap5.PNG}} 
+    \subfloat[70 mph \& Left turn]{\includegraphics[width=0.3\textwidth]{images/heatmap3.PNG}} \\
+    \subfloat[Right turn \& Beware pedestrian crossing]{\includegraphics[width=0.3\textwidth]{images/heatmap4.PNG}} &
+    \subfloat[Beware children \& Beware cycle route ahead]{\includegraphics[width=0.3\textwidth]{images/heatmap5.PNG}} 
   \end{tabular}
 \end{figure}
 
@@ -256,14 +264,14 @@ The following are located in the Scripts folder
 \end{figure}
 
 \newpage
-\subsection{Test data comparison with 500 pixels}\label{500pixelsTestdata}
+\subsection{Test data classification accuracy with the best selection of pixels from 500 pixels}\label{500pixelsTestdata}
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.4]{images/test_data_comparison_pixels.PNG}
 \end{figure}
 
 
-\subsection{Train data comparison with 500 pixels}\label{test_data_500_pixels}
+\subsection{Train data classification accuracy with the best selection of pixels from 500 pixels}\label{test_data_500_pixels}
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.4]{images/train_data_comparison_pixels.PNG}
@@ -303,5 +311,27 @@ The following are located in the Scripts folder
   \centering
   \includegraphics[width=0.85\textwidth]{images/Kmeans10Clusters10Classes.png}
 \end{figure}
+
+\newpage
+\subsection{K2, kParents=1, initAsNB=True, ADtree=True}\label{image71} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/7_1.png}
+\end{figure}
+
+\newpage
+\subsection{K2, kParents=1, initAsNB=False, ADtree=True}\label{image711} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/7_1(1).png}
+\end{figure}
+
+\newpage
+\subsection{Probability Distribution Table for X1409}\label{image7s4} 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/7_4.png}
+\end{figure}
+
 \end{appendices}
 \end{document}
