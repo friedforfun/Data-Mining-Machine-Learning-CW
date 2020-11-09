@@ -149,12 +149,12 @@ def best_pixels(X, y, n, downscale=False, downscale_shape=(2, 2)):
     return res_arr
 
 def get_best_n_pixels_all_classes(data):
-    """Here is a doc string :) 
+    """ Create list of the best pixel amount for each class 
 
-    :param data: [description]
-    :type data: [type]
-    :return: [description]
-    :rtype: [type]
+    :param data: A list containing list of pixels for each class
+    :type data: list
+    :return: list of best pixel amount for classifying for each class
+    :rtype: list
     """
     max_value = []
 
@@ -167,6 +167,14 @@ def get_best_n_pixels_all_classes(data):
 
 
 def get_top_pixels(n):
+    """ list of best pixels for all classes
+
+    :param n: the amount of pixels
+    :type n: int
+    :return: list of best pixels
+    :rtype: list
+    """
+    
     pixel_order = []
     for i in range(-1, 10):
         pixel_order.append(np.array(bestPixels(i, n)))

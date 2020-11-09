@@ -82,26 +82,24 @@ def build_nbg_models(downscale=False, downscale_shape=(2, 2), print_scores=True,
 
 
 def run_classifier(x_data, y, pixel_order, n_pixels=5, verbose=False, **kwargs):
-    """[summary]
+    """run classifiers for all classes
 
-    :param x_data: [description]
-    :type x_data: [type]
-    :param y: [description]
-    :type y: [type]
-    :param pixel_order: [description]
-    :type pixel_order: [type]
+    :param x_data: The data
+    :type x_data: np.array
+    :param y: The data labels
+    :type y: np.array
+    :param pixel_order: list containing the pixels
+    :type pixel_order: list
     :param n_pixels: [description], defaults to 5
     :type n_pixels: int, optional
-    :param verbose: [description], defaults to False
+    :param verbose: print output, defaults to False
     :type verbose: bool, optional
-    :return: [description]
-    :rtype: [type]
+    :return: List: traing & testing data
+    :rtype: List
     """
     scores_list = []
     classifiers_list = []
     data_list = []
-
-    #pixels = grab_n_pixels(pixel_order, 0)
 
     # No 0 pixels so start at 1 
     for i in range(1, n_pixels + 1):
@@ -119,22 +117,21 @@ def run_classifier(x_data, y, pixel_order, n_pixels=5, verbose=False, **kwargs):
         data_list.append(data)
         classifiers_list.append(classifier)
     
-    return scores_list #, data_list, classifiers_list
+    return scores_list
 
-# This range could be incorrect might need to be (0,12)
 def build_classifiers(data, y_labels, pixel_order, result_label_set=(0,11), **kwargs):
-    """[summary]
+    """ run a single classifier
 
-    :param data: [description]
-    :type data: [type]
-    :param y_labels: [description]
-    :type y_labels: [type]
-    :param pixel_order: [description]
-    :type pixel_order: [type]
-    :param result_label_set: [description], defaults to (0,11)
+    :param data: The data
+    :type data: np.array
+    :param y_labels: The data labels
+    :type y_labels: np.array
+    :param pixel_order: list containing the pixels
+    :type pixel_order: list
+    :param result_label_set: the label set, defaults to (0,11)
     :type result_label_set: tuple, optional
-    :return: [description]
-    :rtype: [type]
+    :return: Tuple of List: classifers, List: scores, List: traing & testing data
+    :rtype: Tuple(List, List, List)
     """
     
     classifiers = []
@@ -144,8 +141,6 @@ def build_classifiers(data, y_labels, pixel_order, result_label_set=(0,11), **kw
         X = np.take(data, pixel_order[i], axis=1)
         if X.shape[1] == 0:
             X = np.take(data, [pixel_order[i]], axis=1)
-            #print(X)
-        #print('THIS IS X', X.shape)
         y = y_labels[i]
         classifier, score, local_data = nbg_model_custom_data(X, y, data_label=i-1, **kwargs)
         classifiers += [classifier]
@@ -155,24 +150,24 @@ def build_classifiers(data, y_labels, pixel_order, result_label_set=(0,11), **kw
     return classifiers, scores, dataset
 
 def using_n_pixelrun_classifier(x_data, y, pixel_order,best_pixel_indicies, n_pixels=5, verbose=False, **kwargs):
-    """[summary]
+    """run classifier with n pixels 
 
-    :param x_data: [description]
-    :type x_data: [type]
-    :param y: [description]
-    :type y: [type]
-    :param pixel_order: [description]
-    :type pixel_order: [type]
-    :param best_pixel_indicies: [description]
-    :type best_pixel_indicies: [type]
-    :param n_pixels: [description], defaults to 5
+    :param x_data: The data
+    :type x_data: np.array
+    :param y: The data labels
+    :type y: np.array
+    :param pixel_order: list containing the pixels
+    :type pixel_order: list
+    :param best_pixel_indicies: The indicies of the best pixel
+    :type best_pixel_indicies: list
+    :param n_pixels: amount of pixels to classifiy with, defaults to 5
     :type n_pixels: int, optional
-    :param verbose: [description], defaults to False
+    :param verbose: print output, defaults to False
     :type verbose: bool, optional
-    :return: [description]
-    :rtype: [type]
+    :return: Tuple of List: classifers, List: scores, List: traing & testing data
+    :rtype: Tuple(List, List, List)
     """
-    
+        
     scores_list = []
     classifiers_list = []
     data_list = []

@@ -206,12 +206,12 @@ def plot_line_chart(scores, group_labels, title='Scores for each classifier', ba
     plt.show()
     
 def unzip_all_scores(scores_list):
-    """[summary]
+    """ Unzips all scores in the list
 
-    :param scores_list: [description]
-    :type scores_list: [type]
-    :return: [description]
-    :rtype: [type]
+    :param scores_list: scores to be unzipped
+    :type scores_list: list
+    :return: a list of train scores
+    :rtype: list
     """
 
     train_scores = []
