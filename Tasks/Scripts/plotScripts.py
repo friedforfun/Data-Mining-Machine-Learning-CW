@@ -2,6 +2,7 @@ from math import ceil
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+import networkx as nx
 from numpy.random import default_rng
 
 label_def = {
@@ -34,6 +35,30 @@ def class_to_colour(i):
     return classes.get(i)
 
 g_labels = [label_def.get(i) for i in range(-1, 10)]
+
+def show_models(models_list, nrows=2, ncols=6, hide_last=True):
+    """Plot the models edges
+
+    :param models_list: model
+    :type models_list: list
+    :param nrows: Number of rows, defaults to 2
+    :type nrows: int, optional
+    :param ncols: Number of columns, defaults to 6
+    :type ncols: int, optional
+    :param hide_last: set visibility of last to false, defaults to True
+    :type hide_last: bool, optional
+    """
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(24, 5))
+    ax = axes.ravel()
+    for i in range(len(models_list)):
+        ax[i].axis('off')
+        ax[i].set_title(label_def.get(i-1))
+        nx.draw(models_list[i][0], with_labels=True, ax=ax[i])
+
+    if hide_last:
+        ax[-1].set_visible(False)
+    fig.tight_layout()
+    plt.show()
 
 def plot_line_graph(data_to_plot, x_label_text='Pixel by rank', y_label_text='Accuracy(%)', title_text='Class by class pixel selection accuracy'):
     """Generate n images from the dataset 
