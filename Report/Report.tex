@@ -110,7 +110,7 @@ We have noticed that useADTree parameter doesn't make a difference therefore we 
 
 Initializing as Naive Bayes gives the same accuracy and confusion matrix but as shown in the graph (Appendix ~\ref{image71} \& Appendix ~\ref{image711}) all pixels depend on the Label whereas with NB set to False, some pixels are not dependent and not connected as well as pixels are dependent on other pixels.
 
-In the confusion matrix (Appendix Probability Contribution Table ~\ref{image74}) we can see pixel 1409 depends on the label, pixel 1362 and pixel 982. Due to using binning, Weka binned them into 2 binns one contains pixels between white and light grey and other bin has everything between grey and all the way to black. By knowing this bin distribution we can understand what impact combination of colors has on the outcome.
+In the confusion matrix (Appendix Probability Contribution Table ~\ref{image7s4}) we can see pixel 1409 depends on the label, pixel 1362 and pixel 982. Due to using binning, Weka binned them into 2 binns one contains pixels between white and light grey and other bin has everything between grey and all the way to black. By knowing this bin distribution we can understand what impact combination of colors has on the outcome.
 
 There wasn't a big improvement on the accuracy of confusion matrix between K2, TAN and Hill Climbing.But from insights into the tree visualizations the max number of parents set to 3 is better than 1 as more pixels depend on other pixels which are needed to register features correctly.
 
