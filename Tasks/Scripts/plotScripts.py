@@ -1,6 +1,8 @@
+from math import ceil
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+from numpy.random import default_rng
 
 label_def = {
     -1: 'All Classes',
@@ -77,7 +79,7 @@ def plot_line_graph(data_to_plot, x_label_text='Pixel by rank', y_label_text='Ac
     ax.grid()
     plt.show()
 
-def plot_images(data, n=5):
+def plot_images(data, n=5, rows=1, cols=10, figsize=(15, 8), shuffle=True):
     """Generate n images from the dataset 
 
     :param data: matrix of square images
@@ -86,6 +88,13 @@ def plot_images(data, n=5):
     :type n: int, optional
     """
 
+    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=figsize)
+    ax = axes.ravel()
+
+    if shuffle:
+        rng = default_rng()
+        rng.shuffle(data)
+
     d = int(round(math.sqrt(data.shape[1]), 0))
     if n > data.shape[0]:
         n = data.shape[0]
@@ -93,9 +102,17 @@ def plot_images(data, n=5):
     for i in range(n):
         row = data[i]
         image = row.reshape(d, d)
-        plt.subplot(1, n, i+1)
-        plt.axis('off')
-        plt.imshow(image, cmap='gray')
+        ax[i].imshow(image, cmap='gray')
+
+    for i in range(len(ax)):
+        ax[i].axis('off')
+        ax[i].set_adjustable('box')
+
+    plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, 
+            hspace = 0, wspace = 0)
+    plt.margins(0,0)
+    fig.tight_layout()
+    plt.show()
 
 
 def unzip_scores(score):
