@@ -40,8 +40,8 @@ To facilitate collaboration and reduce repetition we developed a Scripts module 
 \par
 We used Jupyter notebooks for all the tasks, primarily as a testing workspace and a medium to present our final work.
 
-\subsection{Data pre-processing}
-\subsubsection{Data transformation}\label{sec:transSel}
+\subsection{Data pre-processing}\label{sec:transSel}
+\subsubsection{Data transformation}
 \textbf{\underline{Downsampling}}\\
 We used local-mean downscaling (\emph{Scripts/downsampling.py}) to try and expose low level features
 (Appendix~\ref{fig:downsampleExample}). We frequently used downscaling thoughout the project to reduce the image resolution by averaging 4 pixels into 1. 
@@ -87,23 +87,21 @@ First we plotted the accuracy of the different configurations in bar charts to p
 \\
 
 \section{Complex Bayes nets}
-\par
-\emph{Describe \& analyse the problem. Show all experiments complete with graphs and tables. Discuss produced software quality \& discuss interesting properties of the data and algorithms}
 
 \subsection{Building Bayes Networks}
 Bayes networks represent probablistic directed acyclic graphs that define the relationshps between conditional dependencies and random variables.
 A naive Bayesian network can be represented in a Bayes network where the node representing the probability distribution of the class is the only parent of all other nodes and no other edges exist in the network. 
 By adding additional edges (so long as the graph remains acyclic) we can represent causal relations between random variables.
 \par
-We decided to approach this task using both Weka and Python, with the intention of verifying our results against the other.
+Using the pgmpy library we build bayse networks using K2 socring and HillClimbing to infer the edges of the network. Next we calculated the model parameters using pgmpy's built in MaximumLikelihoodEstimator, we also tried this with a BaysianEstimator using K2, and Dirchlet socring mechanisms.
 Attempting to build the network both ways gave us solid insights into the problems that would have to be solved to produce a Bayes Network.
-We decided to use the pgmpy library to build our Bayes Networks in python, this immediately presented us with 2 computational complexity problems:
+We immediately encountered 2 computational complexity problems:
 \begin{enumerate}
-    \item Building all the conditional probability factors.
     \item Learning the optimal edges.
+    \item Building all the model parameters
 \end{enumerate}
 
-*We handled the first problem by discretizing the greyscale values using equal width and frequency binning (see section~\ref{sec:transSel})*
+We handled the first problem by discretizing the greyscale values using equal width binning(see section~\ref{sec:transSel}) and using the data acquired from Task 5 to select a small number of columns to build the networks.
 When using Weka to compute Bayesian networks we observed that Weka would perform extremely aggressive binning of the greyscale values often discretizing down to only 2 bins. This had a profound effect on the speed of learning the parameters and edges.
 
 \subsection{Algorithms \& Data}
